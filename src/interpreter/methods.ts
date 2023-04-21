@@ -1,0 +1,31 @@
+import { metric as m } from "../deps.ts";
+
+// deno-lint-ignore ban-types
+export const METHODS: Record<string, Function> = {
+    "#": m.inter,
+    i: m.inter,
+    "|-": m.perp,
+    perp: m.perp,
+    "//": m.parallel,
+    par: m.parallel,
+    "!": m.projection,
+    proj: m.projection,
+    ".|.": m.perpBisect,
+    perpBsct: m.perpBisect,
+    "<-": m.angleBisect,
+    angBsct: m.angleBisect,
+    mid: m.midpoint,
+    "@": m.circle,
+    l: m.line,
+    d: m.distance,
+    cO: (x: m.Point, y: m.Point, z: m.Point) => m.centers.circumcenter([x, y, z]),
+    cCirc: (x: m.Point, y: m.Point, z: m.Point) => m.centers.circumcenter([x, y, z]),
+    cI: (x: m.Point, y: m.Point, z: m.Point) => m.centers.incenter([x, y, z]),
+    cIn: (x: m.Point, y: m.Point, z: m.Point) => m.centers.incenter([x, y, z]),
+    cJ: (x: m.Point, y: m.Point, z: m.Point) => m.centers.excenter([x, y, z]),
+    cEx: (x: m.Point, y: m.Point, z: m.Point) => m.centers.excenter([x, y, z]),
+    cH: (x: m.Point, y: m.Point, z: m.Point) => m.centers.orthocenter([x, y, z]),
+    cOrtho: (x: m.Point, y: m.Point, z: m.Point) => m.centers.orthocenter([x, y, z]),
+    cG: (x: m.Point, y: m.Point, z: m.Point) => m.centers.centroid([x, y, z]),
+    cCentr: (x: m.Point, y: m.Point, z: m.Point) => m.centers.centroid([x, y, z]),
+}

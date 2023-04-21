@@ -1,0 +1,73 @@
+---
+// deno-lint-ignore-file
+
+import * as ast from "./ast.ts";
+---
+
+File := NewLine? head=FileLine tail=FileLineTail* NewLine?
+    .lines = ast.AstFileLine[] { return [head.val].concat(tail.map((arg, _) => arg.val)); }
+FileLine := WS? ln={Draw | Decl | ConfigLine} WS? .val = ast.AstFileLine { return ln.val; }
+FileLineTail := NewLine ln=FileLine .val = ast.AstFileLine { return ln.val; }
+
+Decl := l=DeclLeft WS? '=' WS? r={Expr | Coord}
+    .val = ast.AstDecl { return { kind: "decl", tar: l.val, val: r.val } }
+DeclLeft := tar={Destruct | Direct} .val = ast.AstDeclLeft { return tar.val; }
+Destruct := tar1={PointID | CommonID} WS? ',' WS? tar2={PointID | CommonID}
+    .val = ast.AstDestruct { return { kind: "destruct", tar1: tar1.val, tar2: tar2.val } }
+Direct := tar={PointID | CommonID}
+    .val = ast.AstDirect { return { kind: "direct", tar: tar.val }; }
+
+Expr := meth=Method WS head=Arg tail=ArgTail* WS?
+    .val = ast.AstExpr {
+        return {
+            method: meth.val,
+            args: [head.val].concat(tail.map((arg, _) => arg.val)),
+        }
+    }
+Method := name='[A-Za-z0-9\'!@#%^*]+' .val = string { return name; }
+Arg := arg={Line2P | CircleOR | CircleOA | PointID | CommonID | PNumber}
+    .val = ast.AstArg { return arg.val; }
+ArgTail := WS? ',' WS? arg=Arg
+    .val = ast.AstArg { return arg.val; }
+
+Coord := c={RightCoord | PolarCoord} .val = ast.AstCoord { return c.val; }
+RightCoord := '\(' WS? x=PNumber WS? ',' WS? y=PNumber WS? '\)'
+    .val = ast.AstCoord { return { x: x.val, y: y.val }; }
+PolarCoord := '\(' WS? r=PNumber WS? ':' WS? a=PNumber WS? '\)'
+    .val = ast.AstCoord { return {
+        x: r.val * Math.cos(a.val * Math.PI / 180),
+        y: r.val * Math.sin(a.val * Math.PI / 180)
+    }; }
+
+Draw := 'draw' WS head=DrawStep tail=DrawStepTail*
+    .val = ast.AstDraw { return {
+        kind: "draw",
+        steps: [head.val].concat(tail.map((arg, _) => arg.val)),
+    }; }
+DrawStep := step={Line2P | CircleOR | CircleOA | PointID | CommonID}
+    .val = ast.AstDrawStep { return step.val; }
+DrawStepTail := WS? ',' WS? step=DrawStep
+    .val = ast.AstDrawStep { return step.val; }
+
+ConfigLine := 'config' WS head=Config tail=ConfigTail*
+    .val = ast.AstConfigLine { return {
+        kind: "config",
+        confs: [head.val].concat(tail.map((arg, _) => arg.val)),
+    }; }
+Config := conf='[A-Za-z_]+' WS? '=' WS? value='[^,\n\r]*'
+    .val = ast.AstConfig { return { conf, value } }
+ConfigTail := WS? ',' WS? step=Config
+    .val = ast.AstConfig { return step.val; }
+
+Line2P := a=PointID b=PointID
+    .val = ast.AstLine2P { return { a: a.val, b: b.val } }
+CircleOR := '\(' WS? o=PointID WS? ',' WS? r={CommonID | PNumber} WS? '\)'
+    .val = ast.AstCircleOR { return { center: o.val, radius: r.val }; }
+CircleOA := '\(' WS? o=PointID WS? ',' WS? a=PointID WS? '\)'
+    .val = ast.AstCircleOA { return { center: o.val, thru: a.val }; }
+
+PointID := name='[A-Z][a-z0-9\']*' .val = string { return name; }
+CommonID := name='[a-z_][a-z0-9\']*'  .val = string { return name; }
+PNumber := num='-?\d+(\.\d+)?' .val = number { return parseFloat(num); }
+WS := '[ \t]+'
+NewLine := '[\n\r]+'

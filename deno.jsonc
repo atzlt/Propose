@@ -1,0 +1,27 @@
+{
+    "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+    "tasks": {
+        "parser": "tspeg --num-enums --include-grammar-comment=false grammar.peg src/interpreter/parser.ts",
+        "dist": "deno compile --allow-read --allow-write -o dist/propose.exe --target x86_64-pc-windows-msvc src/index.ts"
+    },
+    "fmt": {
+        "options": {
+            "indentWidth": 4
+        },
+        "files": {
+            "include": [
+                "./src/"
+            ],
+            "exclude": [
+                "./src/parser/grammar/"
+            ]
+        }
+    },
+    "lint": {
+        "files": {
+            "exclude": [
+                "./parser/grammar/"
+            ]
+        }
+    }
+}
