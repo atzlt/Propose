@@ -4,7 +4,7 @@
 import * as ast from "./ast.ts";
 ---
 
-File := NewLine? head=FileLine tail=FileLineTail* NewLine?
+File := NewLine? head=FileLine tail=FileLineTail* NewLine? $
     .lines = ast.AstFileLine[] { return [head.val].concat(tail.map((arg, _) => arg.val)); }
 FileLine := WS? ln={Draw | Decl | ConfigLine} WS? .val = ast.AstFileLine { return ln.val; }
 FileLineTail := NewLine ln=FileLine .val = ast.AstFileLine { return ln.val; }
@@ -25,18 +25,18 @@ Expr := meth=Method WS head=Arg tail=ArgTail* WS?
         }
     }
 Method := name='[A-Za-z0-9\'!@#%^*]+' .val = string { return name; }
-Arg := arg={Line2P | CircleOR | CircleOA | PointID | CommonID | PNumber}
+Arg := arg={Triangle | Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID | Number}
     .val = ast.AstArg { return arg.val; }
 ArgTail := WS? ',' WS? arg=Arg
     .val = ast.AstArg { return arg.val; }
 
 Coord := c={RightCoord | PolarCoord} .val = ast.AstCoord { return c.val; }
-RightCoord := '\(' WS? x=PNumber WS? ',' WS? y=PNumber WS? '\)'
+RightCoord := '\(' WS? x=RNumber WS? ',' WS? y=RNumber WS? '\)'
     .val = ast.AstCoord { return { x: x.val, y: y.val }; }
-PolarCoord := '\(' WS? r=PNumber WS? ':' WS? a=PNumber WS? '\)'
+PolarCoord := '\(' WS? r=RNumber WS? ':' WS? a=Number WS? '\)'
     .val = ast.AstCoord { return {
-        x: r.val * Math.cos(a.val * Math.PI / 180),
-        y: r.val * Math.sin(a.val * Math.PI / 180)
+        x: r.val * Math.cos(a.val),
+        y: r.val * Math.sin(a.val)
     }; }
 
 Draw := 'draw' WS head=DrawStep tail=DrawStepTail*
@@ -44,30 +44,44 @@ Draw := 'draw' WS head=DrawStep tail=DrawStepTail*
         kind: "draw",
         steps: [head.val].concat(tail.map((arg, _) => arg.val)),
     }; }
-DrawStep := step={Line2P | CircleOR | CircleOA | PointID | CommonID}
-    .val = ast.AstDrawStep { return step.val; }
+DrawStep := step={Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID} WS? conf=DrawConfig?
+    .val = ast.AstDrawStep { return {
+        step: step.val,
+        conf: conf ? conf.val : [],
+    }; }
 DrawStepTail := WS? ',' WS? step=DrawStep
     .val = ast.AstDrawStep { return step.val; }
+DrawConfig := '\[' WS? head=Config tail=ConfigTail* WS? '\]'
+    .val = ast.AstConfig[] { return [head.val].concat(tail.map((arg, _) => arg.val)) }
 
 ConfigLine := 'config' WS head=Config tail=ConfigTail*
     .val = ast.AstConfigLine { return {
         kind: "config",
         confs: [head.val].concat(tail.map((arg, _) => arg.val)),
     }; }
-Config := conf='[A-Za-z_]+' WS? '=' WS? value='[^,\n\r]*'
-    .val = ast.AstConfig { return { conf, value } }
+Config := conf='[A-Za-z_]+' WS? '=' WS? value='[A-Za-z0-9-_]*'
+    .val = ast.AstConfig {
+        if (value.endsWith("deg")) value = parseFloat(value) * Math.PI / 180;
+        return { conf, value }
+    }
 ConfigTail := WS? ',' WS? step=Config
     .val = ast.AstConfig { return step.val; }
 
 Line2P := a=PointID b=PointID
-    .val = ast.AstLine2P { return { a: a.val, b: b.val } }
-CircleOR := '\(' WS? o=PointID WS? ',' WS? r={CommonID | PNumber} WS? '\)'
-    .val = ast.AstCircleOR { return { center: o.val, radius: r.val }; }
+    .val = ast.AstLine2P { return { kind: "line2p", a: a.val, b: b.val } }
+Triangle := a=PointID b=PointID c=PointID
+    .val = ast.AstTriangle { return { kind: "trig", a: a.val, b: b.val, c: c.val } }
+CircleOR := '\(' WS? o=PointID WS? ',' WS? r={CommonID | RNumber} WS? '\)'
+    .val = ast.AstCircleOR { return { kind: "or", center: o.val, radius: r.val }; }
 CircleOA := '\(' WS? o=PointID WS? ',' WS? a=PointID WS? '\)'
-    .val = ast.AstCircleOA { return { center: o.val, thru: a.val }; }
+    .val = ast.AstCircleOA { return { kind: "oa", center: o.val, thru: a.val }; }
+Circle3P := '\(' WS? a=PointID WS? b=PointID WS? c=PointID WS? '\)'
+    .val = ast.AstCircle3P { return { kind: "o3p", a: a.val, b: b.val, c: c.val }; }
 
 PointID := name='[A-Z][a-z0-9\']*' .val = string { return name; }
 CommonID := name='[a-z_][a-z0-9\']*'  .val = string { return name; }
-PNumber := num='-?\d+(\.\d+)?' .val = number { return parseFloat(num); }
+Number := num={Degree | RNumber} .val = number { return num.val; }
+RNumber := num='-?\d+(\.\d+)?' .val = number { return parseFloat(num); }
+Degree := num=RNumber 'deg' .val = number { return num.val * Math.PI / 180; }
 WS := '[ \t]+'
 NewLine := '[\n\r]+'

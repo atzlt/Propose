@@ -1,6 +1,6 @@
 import { metric as m } from "../deps.ts";
-import { AstArg, AstExpr, isCircleOA, isCircleOR, isConf, isCoord, isDecl, isDestruct, isDraw, isLine2P } from "./ast.ts";
-import { drawCircle, drawDot, drawSegment } from "./draw.ts";
+import { AstArg, AstExpr, isCircle3P, isCircleOA, isCircleOR, isConf, isCoord, isDecl, isDestruct, isDraw, isLine2P, isTrig } from "./ast.ts";
+import { drawCircle, drawDot, drawPointLabel, drawSegment } from "./draw.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
 
@@ -14,6 +14,8 @@ function evalArg(arg: AstArg, objs: ObjectsRecord) {
         return arg;
     } else if (isLine2P(arg)) {
         return m.line(<m.Point>objs[arg.a], <m.Point>objs[arg.b]);
+    } else if (isTrig(arg)) {
+        return [<m.Point>objs[arg.a], <m.Point>objs[arg.b], <m.Point>objs[arg.c]]
     } else if (isCircleOR(arg)) {
         if (typeof arg.radius == "number") {
             return m.circle(<m.Point>objs[arg.center], arg.radius);
@@ -22,7 +24,9 @@ function evalArg(arg: AstArg, objs: ObjectsRecord) {
         }
     } else if (isCircleOA(arg)) {
         return m.circle(<m.Point>objs[arg.center], <m.Point>objs[arg.thru]);
-    } else throw Error(`Unrecognized argument ${arg}`);
+    } else if (isCircle3P(arg)) {
+        return m.circle(<m.Point>objs[arg.a], <m.Point>objs[arg.b], <m.Point>objs[arg.c]);
+    } throw Error(`Unrecognized argument ${arg}`);
 }
 
 function evalExpr(expr: AstExpr, objs: ObjectsRecord) {
@@ -49,26 +53,30 @@ type InterpreterOption = {
 };
 
 export default function interpret(str: string, options: InterpreterOption) {
-    const objs: ObjectsRecord = {
-        "l": m.line(1, 0, -1),
-        "k": m.line(0, 1, -1),
-    };
+    const objs: ObjectsRecord = {};
     // deno-lint-ignore no-explicit-any
     const config: Record<string, any> = Object.assign({
         width: 300,
         height: 300,
+        minX: -150,
+        minY: -150,
         color: "#000000",
         fill: "#00000000",
         linewidth: 1.5,
         dotsize: 2.5,
+        labelloc: 0,
+        labeldist: 0.3,
+        labelsize: 15,
     }, options);
+    // Split into lines and dots, because dots are always on top of lines
     let lineSvg = "";
     let dotsSvg = "";
-    const ast = parse(str).ast;
-    if (ast == null) {
-        throw new Error("Input is invalid");
+    let textSvg = "";
+    const parseResult = parse(str);
+    if (parseResult.ast == null) {
+        throw new Error(`Input is invalid: ${parseResult.errs}`);
     }
-    const lines = ast.lines;
+    const lines = parseResult.ast.lines;
     for (const line of lines) {
         if (isDecl(line)) {
             const left = line.tar;
@@ -90,21 +98,29 @@ export default function interpret(str: string, options: InterpreterOption) {
             }
         } else if (isDraw(line)) {
             console.log(line);
-            for (const step of line.steps) {
+            for (const drawStep of line.steps) {
+                const step = drawStep.step;
+                let tempConf: Record<string, string> = {};
+                for (const conf of drawStep.conf) {
+                    tempConf[conf.conf] = conf.value;
+                }
+                tempConf = {...config, ...tempConf};
+
                 if (typeof step == "string") {
                     const obj = objs[step];
                     console.log(obj);
                     if (m.isPoint(obj)) {
-                        dotsSvg += drawDot(obj, config);
+                        dotsSvg += drawDot(obj, tempConf);
+                        if (tempConf.label != undefined) {
+                            textSvg += drawPointLabel(obj, tempConf);
+                        }
                     } else if (m.isCircle(obj)) {
-                        lineSvg += drawCircle(obj, config);
+                        lineSvg += drawCircle(obj, tempConf);
                     }
                 } else if (isLine2P(step)) {
-                    lineSvg += drawSegment(<m.Point>objs[step.a], <m.Point>objs[step.b], config);
-                } else if (isCircleOR(step)) {
-                    lineSvg += drawCircle(m.circle(<m.Point>objs[step.center], <number>objs[step.radius]), config);
-                } else if (isCircleOA(step)) {
-                    lineSvg += drawCircle(m.circle(<m.Point>objs[step.center], <m.Point>objs[step.thru]), config);
+                    lineSvg += drawSegment(<m.Point>objs[step.a], <m.Point>objs[step.b], tempConf);
+                } else if (isCircleOR(step) || isCircleOA(step) || isCircle3P(step)) {
+                    lineSvg += drawCircle(<m.Circle>evalArg(step, objs), tempConf);
                 } else throw Error(`Unrecognized drawing step ${step}`);
             }
         } else if (isConf(line)) {
@@ -113,7 +129,7 @@ export default function interpret(str: string, options: InterpreterOption) {
             }
         }
     }
-    return wrapSVG(lineSvg + dotsSvg, config);
+    return wrapSVG(lineSvg + dotsSvg + textSvg, config);
 }
 
 // deno-lint-ignore no-explicit-any

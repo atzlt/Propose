@@ -40,6 +40,8 @@ export enum ASTKinds {
     Arg_$0_4,
     Arg_$0_5,
     Arg_$0_6,
+    Arg_$0_7,
+    Arg_$0_8,
     ArgTail,
     Coord,
     Coord_$0_1,
@@ -53,20 +55,29 @@ export enum ASTKinds {
     DrawStep_$0_3,
     DrawStep_$0_4,
     DrawStep_$0_5,
+    DrawStep_$0_6,
     DrawStepTail,
+    DrawConfig,
     ConfigLine,
     Config,
     ConfigTail,
     Line2P,
+    Triangle,
     CircleOR,
     CircleOR_$0_1,
     CircleOR_$0_2,
     CircleOA,
+    Circle3P,
     PointID,
     CommonID,
-    PNumber,
+    Number,
+    Number_$0_1,
+    Number_$0_2,
+    RNumber,
+    Degree,
     WS,
     NewLine,
+    $EOF,
 }
 export class File {
     public kind: ASTKinds.File = ASTKinds.File;
@@ -210,13 +221,15 @@ export class Arg {
         })();
     }
 }
-export type Arg_$0 = Arg_$0_1 | Arg_$0_2 | Arg_$0_3 | Arg_$0_4 | Arg_$0_5 | Arg_$0_6;
-export type Arg_$0_1 = Line2P;
-export type Arg_$0_2 = CircleOR;
-export type Arg_$0_3 = CircleOA;
-export type Arg_$0_4 = PointID;
-export type Arg_$0_5 = CommonID;
-export type Arg_$0_6 = PNumber;
+export type Arg_$0 = Arg_$0_1 | Arg_$0_2 | Arg_$0_3 | Arg_$0_4 | Arg_$0_5 | Arg_$0_6 | Arg_$0_7 | Arg_$0_8;
+export type Arg_$0_1 = Triangle;
+export type Arg_$0_2 = Line2P;
+export type Arg_$0_3 = Circle3P;
+export type Arg_$0_4 = CircleOR;
+export type Arg_$0_5 = CircleOA;
+export type Arg_$0_6 = PointID;
+export type Arg_$0_7 = CommonID;
+export type Arg_$0_8 = Number;
 export class ArgTail {
     public kind: ASTKinds.ArgTail = ASTKinds.ArgTail;
     public arg: Arg;
@@ -244,10 +257,10 @@ export type Coord_$0_1 = RightCoord;
 export type Coord_$0_2 = PolarCoord;
 export class RightCoord {
     public kind: ASTKinds.RightCoord = ASTKinds.RightCoord;
-    public x: PNumber;
-    public y: PNumber;
+    public x: RNumber;
+    public y: RNumber;
     public val: ast.AstCoord;
-    constructor(x: PNumber, y: PNumber){
+    constructor(x: RNumber, y: RNumber){
         this.x = x;
         this.y = y;
         this.val = ((): ast.AstCoord => {
@@ -257,16 +270,16 @@ export class RightCoord {
 }
 export class PolarCoord {
     public kind: ASTKinds.PolarCoord = ASTKinds.PolarCoord;
-    public r: PNumber;
-    public a: PNumber;
+    public r: RNumber;
+    public a: Number;
     public val: ast.AstCoord;
-    constructor(r: PNumber, a: PNumber){
+    constructor(r: RNumber, a: Number){
         this.r = r;
         this.a = a;
         this.val = ((): ast.AstCoord => {
         return {
-        x: r.val * Math.cos(a.val * Math.PI / 180),
-        y: r.val * Math.sin(a.val * Math.PI / 180)
+        x: r.val * Math.cos(a.val),
+        y: r.val * Math.sin(a.val)
     };
         })();
     }
@@ -290,20 +303,26 @@ export class Draw {
 export class DrawStep {
     public kind: ASTKinds.DrawStep = ASTKinds.DrawStep;
     public step: DrawStep_$0;
+    public conf: Nullable<DrawConfig>;
     public val: ast.AstDrawStep;
-    constructor(step: DrawStep_$0){
+    constructor(step: DrawStep_$0, conf: Nullable<DrawConfig>){
         this.step = step;
+        this.conf = conf;
         this.val = ((): ast.AstDrawStep => {
-        return step.val;
+        return {
+        step: step.val,
+        conf: conf ? conf.val : [],
+    };
         })();
     }
 }
-export type DrawStep_$0 = DrawStep_$0_1 | DrawStep_$0_2 | DrawStep_$0_3 | DrawStep_$0_4 | DrawStep_$0_5;
+export type DrawStep_$0 = DrawStep_$0_1 | DrawStep_$0_2 | DrawStep_$0_3 | DrawStep_$0_4 | DrawStep_$0_5 | DrawStep_$0_6;
 export type DrawStep_$0_1 = Line2P;
-export type DrawStep_$0_2 = CircleOR;
-export type DrawStep_$0_3 = CircleOA;
-export type DrawStep_$0_4 = PointID;
-export type DrawStep_$0_5 = CommonID;
+export type DrawStep_$0_2 = Circle3P;
+export type DrawStep_$0_3 = CircleOR;
+export type DrawStep_$0_4 = CircleOA;
+export type DrawStep_$0_5 = PointID;
+export type DrawStep_$0_6 = CommonID;
 export class DrawStepTail {
     public kind: ASTKinds.DrawStepTail = ASTKinds.DrawStepTail;
     public step: DrawStep;
@@ -312,6 +331,19 @@ export class DrawStepTail {
         this.step = step;
         this.val = ((): ast.AstDrawStep => {
         return step.val;
+        })();
+    }
+}
+export class DrawConfig {
+    public kind: ASTKinds.DrawConfig = ASTKinds.DrawConfig;
+    public head: Config;
+    public tail: ConfigTail[];
+    public val: ast.AstConfig[];
+    constructor(head: Config, tail: ConfigTail[]){
+        this.head = head;
+        this.tail = tail;
+        this.val = ((): ast.AstConfig[] => {
+        return [head.val].concat(tail.map((arg, _) => arg.val))
         })();
     }
 }
@@ -340,6 +372,7 @@ export class Config {
         this.conf = conf;
         this.value = value;
         this.val = ((): ast.AstConfig => {
+        if (value.endsWith("deg")) value = parseFloat(value) * Math.PI / 180;
         return { conf, value }
         })();
     }
@@ -364,7 +397,22 @@ export class Line2P {
         this.a = a;
         this.b = b;
         this.val = ((): ast.AstLine2P => {
-        return { a: a.val, b: b.val }
+        return { kind: "line2p", a: a.val, b: b.val }
+        })();
+    }
+}
+export class Triangle {
+    public kind: ASTKinds.Triangle = ASTKinds.Triangle;
+    public a: PointID;
+    public b: PointID;
+    public c: PointID;
+    public val: ast.AstTriangle;
+    constructor(a: PointID, b: PointID, c: PointID){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.val = ((): ast.AstTriangle => {
+        return { kind: "trig", a: a.val, b: b.val, c: c.val }
         })();
     }
 }
@@ -377,13 +425,13 @@ export class CircleOR {
         this.o = o;
         this.r = r;
         this.val = ((): ast.AstCircleOR => {
-        return { center: o.val, radius: r.val };
+        return { kind: "or", center: o.val, radius: r.val };
         })();
     }
 }
 export type CircleOR_$0 = CircleOR_$0_1 | CircleOR_$0_2;
 export type CircleOR_$0_1 = CommonID;
-export type CircleOR_$0_2 = PNumber;
+export type CircleOR_$0_2 = RNumber;
 export class CircleOA {
     public kind: ASTKinds.CircleOA = ASTKinds.CircleOA;
     public o: PointID;
@@ -393,7 +441,22 @@ export class CircleOA {
         this.o = o;
         this.a = a;
         this.val = ((): ast.AstCircleOA => {
-        return { center: o.val, thru: a.val };
+        return { kind: "oa", center: o.val, thru: a.val };
+        })();
+    }
+}
+export class Circle3P {
+    public kind: ASTKinds.Circle3P = ASTKinds.Circle3P;
+    public a: PointID;
+    public b: PointID;
+    public c: PointID;
+    public val: ast.AstCircle3P;
+    constructor(a: PointID, b: PointID, c: PointID){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.val = ((): ast.AstCircle3P => {
+        return { kind: "o3p", a: a.val, b: b.val, c: c.val };
         })();
     }
 }
@@ -419,14 +482,39 @@ export class CommonID {
         })();
     }
 }
-export class PNumber {
-    public kind: ASTKinds.PNumber = ASTKinds.PNumber;
+export class Number {
+    public kind: ASTKinds.Number = ASTKinds.Number;
+    public num: Number_$0;
+    public val: number;
+    constructor(num: Number_$0){
+        this.num = num;
+        this.val = ((): number => {
+        return num.val;
+        })();
+    }
+}
+export type Number_$0 = Number_$0_1 | Number_$0_2;
+export type Number_$0_1 = Degree;
+export type Number_$0_2 = RNumber;
+export class RNumber {
+    public kind: ASTKinds.RNumber = ASTKinds.RNumber;
     public num: string;
     public val: number;
     constructor(num: string){
         this.num = num;
         this.val = ((): number => {
         return parseFloat(num);
+        })();
+    }
+}
+export class Degree {
+    public kind: ASTKinds.Degree = ASTKinds.Degree;
+    public num: RNumber;
+    public val: number;
+    constructor(num: RNumber){
+        this.num = num;
+        this.val = ((): number => {
+        return num.val * Math.PI / 180;
         })();
     }
 }
@@ -460,6 +548,7 @@ export class Parser {
                     && ($scope$head = this.matchFileLine($$dpth + 1, $$cr)) !== null
                     && ($scope$tail = this.loop<FileLineTail>(() => this.matchFileLineTail($$dpth + 1, $$cr), true)) !== null
                     && ((this.matchNewLine($$dpth + 1, $$cr)) || true)
+                    && this.match$EOF($$cr) !== null
                 ) {
                     $$res = new File($scope$head, $scope$tail);
                 }
@@ -686,25 +775,33 @@ export class Parser {
             () => this.matchArg_$0_4($$dpth + 1, $$cr),
             () => this.matchArg_$0_5($$dpth + 1, $$cr),
             () => this.matchArg_$0_6($$dpth + 1, $$cr),
+            () => this.matchArg_$0_7($$dpth + 1, $$cr),
+            () => this.matchArg_$0_8($$dpth + 1, $$cr),
         ]);
     }
     public matchArg_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_1> {
-        return this.matchLine2P($$dpth + 1, $$cr);
+        return this.matchTriangle($$dpth + 1, $$cr);
     }
     public matchArg_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_2> {
-        return this.matchCircleOR($$dpth + 1, $$cr);
+        return this.matchLine2P($$dpth + 1, $$cr);
     }
     public matchArg_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_3> {
-        return this.matchCircleOA($$dpth + 1, $$cr);
+        return this.matchCircle3P($$dpth + 1, $$cr);
     }
     public matchArg_$0_4($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_4> {
-        return this.matchPointID($$dpth + 1, $$cr);
+        return this.matchCircleOR($$dpth + 1, $$cr);
     }
     public matchArg_$0_5($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_5> {
-        return this.matchCommonID($$dpth + 1, $$cr);
+        return this.matchCircleOA($$dpth + 1, $$cr);
     }
     public matchArg_$0_6($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_6> {
-        return this.matchPNumber($$dpth + 1, $$cr);
+        return this.matchPointID($$dpth + 1, $$cr);
+    }
+    public matchArg_$0_7($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_7> {
+        return this.matchCommonID($$dpth + 1, $$cr);
+    }
+    public matchArg_$0_8($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_8> {
+        return this.matchNumber($$dpth + 1, $$cr);
     }
     public matchArgTail($$dpth: number, $$cr?: ErrorTracker): Nullable<ArgTail> {
         return this.run<ArgTail>($$dpth,
@@ -750,17 +847,17 @@ export class Parser {
     public matchRightCoord($$dpth: number, $$cr?: ErrorTracker): Nullable<RightCoord> {
         return this.run<RightCoord>($$dpth,
             () => {
-                let $scope$x: Nullable<PNumber>;
-                let $scope$y: Nullable<PNumber>;
+                let $scope$x: Nullable<RNumber>;
+                let $scope$y: Nullable<RNumber>;
                 let $$res: Nullable<RightCoord> = null;
                 if (true
                     && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$x = this.matchPNumber($$dpth + 1, $$cr)) !== null
+                    && ($scope$x = this.matchRNumber($$dpth + 1, $$cr)) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$y = this.matchPNumber($$dpth + 1, $$cr)) !== null
+                    && ($scope$y = this.matchRNumber($$dpth + 1, $$cr)) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
                 ) {
@@ -772,17 +869,17 @@ export class Parser {
     public matchPolarCoord($$dpth: number, $$cr?: ErrorTracker): Nullable<PolarCoord> {
         return this.run<PolarCoord>($$dpth,
             () => {
-                let $scope$r: Nullable<PNumber>;
-                let $scope$a: Nullable<PNumber>;
+                let $scope$r: Nullable<RNumber>;
+                let $scope$a: Nullable<Number>;
                 let $$res: Nullable<PolarCoord> = null;
                 if (true
                     && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$r = this.matchPNumber($$dpth + 1, $$cr)) !== null
+                    && ($scope$r = this.matchRNumber($$dpth + 1, $$cr)) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?::)`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$a = this.matchPNumber($$dpth + 1, $$cr)) !== null
+                    && ($scope$a = this.matchNumber($$dpth + 1, $$cr)) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
                 ) {
@@ -812,11 +909,14 @@ export class Parser {
         return this.run<DrawStep>($$dpth,
             () => {
                 let $scope$step: Nullable<DrawStep_$0>;
+                let $scope$conf: Nullable<Nullable<DrawConfig>>;
                 let $$res: Nullable<DrawStep> = null;
                 if (true
                     && ($scope$step = this.matchDrawStep_$0($$dpth + 1, $$cr)) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && (($scope$conf = this.matchDrawConfig($$dpth + 1, $$cr)) || true)
                 ) {
-                    $$res = new DrawStep($scope$step);
+                    $$res = new DrawStep($scope$step, $scope$conf);
                 }
                 return $$res;
             });
@@ -828,21 +928,25 @@ export class Parser {
             () => this.matchDrawStep_$0_3($$dpth + 1, $$cr),
             () => this.matchDrawStep_$0_4($$dpth + 1, $$cr),
             () => this.matchDrawStep_$0_5($$dpth + 1, $$cr),
+            () => this.matchDrawStep_$0_6($$dpth + 1, $$cr),
         ]);
     }
     public matchDrawStep_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_1> {
         return this.matchLine2P($$dpth + 1, $$cr);
     }
     public matchDrawStep_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_2> {
-        return this.matchCircleOR($$dpth + 1, $$cr);
+        return this.matchCircle3P($$dpth + 1, $$cr);
     }
     public matchDrawStep_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_3> {
-        return this.matchCircleOA($$dpth + 1, $$cr);
+        return this.matchCircleOR($$dpth + 1, $$cr);
     }
     public matchDrawStep_$0_4($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_4> {
-        return this.matchPointID($$dpth + 1, $$cr);
+        return this.matchCircleOA($$dpth + 1, $$cr);
     }
     public matchDrawStep_$0_5($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_5> {
+        return this.matchPointID($$dpth + 1, $$cr);
+    }
+    public matchDrawStep_$0_6($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_6> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
     public matchDrawStepTail($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStepTail> {
@@ -857,6 +961,25 @@ export class Parser {
                     && ($scope$step = this.matchDrawStep($$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new DrawStepTail($scope$step);
+                }
+                return $$res;
+            });
+    }
+    public matchDrawConfig($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawConfig> {
+        return this.run<DrawConfig>($$dpth,
+            () => {
+                let $scope$head: Nullable<Config>;
+                let $scope$tail: Nullable<ConfigTail[]>;
+                let $$res: Nullable<DrawConfig> = null;
+                if (true
+                    && this.regexAccept(String.raw`(?:\[)`, $$dpth + 1, $$cr) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && ($scope$head = this.matchConfig($$dpth + 1, $$cr)) !== null
+                    && ($scope$tail = this.loop<ConfigTail>(() => this.matchConfigTail($$dpth + 1, $$cr), true)) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && this.regexAccept(String.raw`(?:\])`, $$dpth + 1, $$cr) !== null
+                ) {
+                    $$res = new DrawConfig($scope$head, $scope$tail);
                 }
                 return $$res;
             });
@@ -889,7 +1012,7 @@ export class Parser {
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$value = this.regexAccept(String.raw`(?:[^,\n\r]*)`, $$dpth + 1, $$cr)) !== null
+                    && ($scope$value = this.regexAccept(String.raw`(?:[A-Za-z0-9-_]*)`, $$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new Config($scope$conf, $scope$value);
                 }
@@ -927,6 +1050,23 @@ export class Parser {
                 return $$res;
             });
     }
+    public matchTriangle($$dpth: number, $$cr?: ErrorTracker): Nullable<Triangle> {
+        return this.run<Triangle>($$dpth,
+            () => {
+                let $scope$a: Nullable<PointID>;
+                let $scope$b: Nullable<PointID>;
+                let $scope$c: Nullable<PointID>;
+                let $$res: Nullable<Triangle> = null;
+                if (true
+                    && ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null
+                    && ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null
+                    && ($scope$c = this.matchPointID($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new Triangle($scope$a, $scope$b, $scope$c);
+                }
+                return $$res;
+            });
+    }
     public matchCircleOR($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOR> {
         return this.run<CircleOR>($$dpth,
             () => {
@@ -959,7 +1099,7 @@ export class Parser {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
     public matchCircleOR_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOR_$0_2> {
-        return this.matchPNumber($$dpth + 1, $$cr);
+        return this.matchRNumber($$dpth + 1, $$cr);
     }
     public matchCircleOA($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOA> {
         return this.run<CircleOA>($$dpth,
@@ -979,6 +1119,29 @@ export class Parser {
                     && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
                 ) {
                     $$res = new CircleOA($scope$o, $scope$a);
+                }
+                return $$res;
+            });
+    }
+    public matchCircle3P($$dpth: number, $$cr?: ErrorTracker): Nullable<Circle3P> {
+        return this.run<Circle3P>($$dpth,
+            () => {
+                let $scope$a: Nullable<PointID>;
+                let $scope$b: Nullable<PointID>;
+                let $scope$c: Nullable<PointID>;
+                let $$res: Nullable<Circle3P> = null;
+                if (true
+                    && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && ($scope$c = this.matchPointID($$dpth + 1, $$cr)) !== null
+                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
+                    && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
+                ) {
+                    $$res = new Circle3P($scope$a, $scope$b, $scope$c);
                 }
                 return $$res;
             });
@@ -1009,15 +1172,54 @@ export class Parser {
                 return $$res;
             });
     }
-    public matchPNumber($$dpth: number, $$cr?: ErrorTracker): Nullable<PNumber> {
-        return this.run<PNumber>($$dpth,
+    public matchNumber($$dpth: number, $$cr?: ErrorTracker): Nullable<Number> {
+        return this.run<Number>($$dpth,
+            () => {
+                let $scope$num: Nullable<Number_$0>;
+                let $$res: Nullable<Number> = null;
+                if (true
+                    && ($scope$num = this.matchNumber_$0($$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new Number($scope$num);
+                }
+                return $$res;
+            });
+    }
+    public matchNumber_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Number_$0> {
+        return this.choice<Number_$0>([
+            () => this.matchNumber_$0_1($$dpth + 1, $$cr),
+            () => this.matchNumber_$0_2($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchNumber_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Number_$0_1> {
+        return this.matchDegree($$dpth + 1, $$cr);
+    }
+    public matchNumber_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Number_$0_2> {
+        return this.matchRNumber($$dpth + 1, $$cr);
+    }
+    public matchRNumber($$dpth: number, $$cr?: ErrorTracker): Nullable<RNumber> {
+        return this.run<RNumber>($$dpth,
             () => {
                 let $scope$num: Nullable<string>;
-                let $$res: Nullable<PNumber> = null;
+                let $$res: Nullable<RNumber> = null;
                 if (true
                     && ($scope$num = this.regexAccept(String.raw`(?:-?\d+(\.\d+)?)`, $$dpth + 1, $$cr)) !== null
                 ) {
-                    $$res = new PNumber($scope$num);
+                    $$res = new RNumber($scope$num);
+                }
+                return $$res;
+            });
+    }
+    public matchDegree($$dpth: number, $$cr?: ErrorTracker): Nullable<Degree> {
+        return this.run<Degree>($$dpth,
+            () => {
+                let $scope$num: Nullable<RNumber>;
+                let $$res: Nullable<Degree> = null;
+                if (true
+                    && ($scope$num = this.matchRNumber($$dpth + 1, $$cr)) !== null
+                    && this.regexAccept(String.raw`(?:deg)`, $$dpth + 1, $$cr) !== null
+                ) {
+                    $$res = new Degree($scope$num);
                 }
                 return $$res;
             });
@@ -1148,6 +1350,12 @@ export class Parser {
         if(this.memoSafe)
         memo.set($scope$pos.overallPos, [$scope$result, this.mark()]);
         return $scope$result;
+    }
+    private match$EOF(et?: ErrorTracker): Nullable<{kind: ASTKinds.$EOF}> {
+        const res: {kind: ASTKinds.$EOF} | null = this.finished() ? { kind: ASTKinds.$EOF } : null;
+        if(et)
+            et.record(this.mark(), res, { kind: "EOF", negated: this.negating });
+        return res;
     }
 }
 export function parse(s: string): ParseResult {

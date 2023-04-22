@@ -1,0 +1,17 @@
+A = (-3, -2)
+B = (3, -2)
+C = (1, 2)
+M = mid A, B
+N = mid B, C
+L = mid C, A
+P = ! A, BC
+Q = ! B, CA
+R = ! C, AB
+
+draw A, B, C, AB, BC, CA, M, N, L, P, Q, R
+
+config color=grey
+draw AP, BQ, CR
+
+config color=red
+draw (MNL)

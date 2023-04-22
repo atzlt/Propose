@@ -1,19 +1,37 @@
 export type AstLine2P = {
+    kind: "line2p",
     a: string,
     b: string,
 };
 
+export type AstTriangle = {
+    kind: "trig",
+    a: string,
+    b: string,
+    c: string,
+};
+
 export type AstCircleOR = {
+    kind: "or",
     center: string,
     radius: string | number,
 };
 
 export type AstCircleOA = {
+    kind: "oa",
     center: string,
     thru: string,
 };
 
-export type AstArg = string | AstLine2P | AstCircleOA | AstCircleOR | number;
+export type AstCircle3P = {
+    kind: "o3p",
+    a: string,
+    b: string,
+    c: string,
+};
+
+export type AstArg =
+    string | AstLine2P | AstTriangle | AstCircle3P | AstCircleOA | AstCircleOR | AstTriangle | number;
 
 export type AstExpr = {
     method: string,
@@ -23,7 +41,7 @@ export type AstExpr = {
 export type AstCoord = {
     x: number,
     y: number,
-}
+};
 
 export type AstDestruct = {
     kind: "destruct",
@@ -44,7 +62,10 @@ export type AstDecl = {
     val: AstExpr | AstCoord,
 };
 
-export type AstDrawStep = AstLine2P | AstCircleOA | AstCircleOR | string;
+export type AstDrawStep = {
+    step: AstLine2P | AstCircleOA | AstCircleOR | AstCircle3P | string,
+    conf: AstConfig[],
+};
 
 export type AstDraw = {
     kind: "draw",
@@ -54,11 +75,11 @@ export type AstDraw = {
 export type AstConfig = {
     conf: string,
     value: string,
-}
+};
 
 export type AstConfigLine = {
     kind: "config",
-    confs: AstConfig[]
+    confs: AstConfig[];
 };
 
 export type AstFileLine = AstDecl | AstDraw | AstConfigLine;
@@ -70,17 +91,27 @@ export function isDestruct(x: any): x is AstDestruct {
 
 // deno-lint-ignore no-explicit-any
 export function isLine2P(x: any): x is AstLine2P {
-    return x.a && x.b;
+    return x.kind == "line2p";
+}
+
+// deno-lint-ignore no-explicit-any
+export function isTrig(x: any): x is AstTriangle {
+    return x.kind == "trig";
 }
 
 // deno-lint-ignore no-explicit-any
 export function isCircleOR(x: any): x is AstCircleOR {
-    return x.center && x.radius;
+    return x.kind == "or";
 }
 
 // deno-lint-ignore no-explicit-any
 export function isCircleOA(x: any): x is AstCircleOA {
-    return x.center && x.thru;
+    return x.kind == "oa";
+}
+
+// deno-lint-ignore no-explicit-any
+export function isCircle3P(x: any): x is AstCircle3P {
+    return x.kind == "o3p";
 }
 
 // deno-lint-ignore no-explicit-any

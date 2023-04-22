@@ -1,12 +1,10 @@
 config width=250, height=200
 
-A = (-3, 2)
-B = (3, 2)
-C = (1, -2)
-I = cI A, B, C
+A = (-3, -2)
+B = (3, -2)
+C = (1, 2)
+I = cI ABC
 r = d I, AB
 
-draw A, B, C, AB, BC, CA, I
-
-config color=blue
-draw (I, r)
+draw A[label=A,labelloc=200deg], B[label=B,labelloc=-20deg], C[label=C,labelloc=90deg]
+draw AB, BC, CA, I[label=I], (I, r)[color=blue]
