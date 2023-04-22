@@ -13,14 +13,17 @@
                 "./src/"
             ],
             "exclude": [
-                "./src/parser/grammar/"
+                "./src/interpreter/parser.ts/"
             ]
         }
     },
     "lint": {
         "files": {
+            "include": [
+                "./src/"
+            ],
             "exclude": [
-                "./parser/grammar/"
+                "./src/interpreter/parser.ts"
             ]
         }
     }

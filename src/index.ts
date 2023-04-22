@@ -1,5 +1,7 @@
 import { parseFlags } from "./deps.ts";
-import interpret from "./interpreter/interpreter.ts";
+import Interpreter from "./interpreter/interpreter.ts";
+
+const VERSION = "v0.1.0-alpha";
 
 const { flags } = parseFlags(Deno.args, {
     flags: [
@@ -7,6 +9,7 @@ const { flags } = parseFlags(Deno.args, {
             name: "in",
             aliases: ["i"],
             type: "string",
+            optionalValue: true,
         },
         {
             name: "out",
@@ -14,15 +17,39 @@ const { flags } = parseFlags(Deno.args, {
             type: "string",
             optionalValue: true,
         },
-    ]
+        {
+            name: "version",
+            aliases: ["v"],
+            standalone: true,
+        },
+    ],
 });
 
-if (!flags.out) {
-    flags.out = flags.in.replaceAll(".prs", ".svg");
+if (flags.version) {
+    console.log(`Propose ${VERSION}`);
+} else if (flags.in) {
+    if (!flags.out) {
+        flags.out = flags.in.replaceAll(".prs", ".svg");
+    }
+    const decoder = new TextDecoder("utf-8");
+    const encoder = new TextEncoder();
+    const input = decoder.decode(Deno.readFileSync(flags.in));
+    const interpreter = new Interpreter({});
+    interpreter.interpret(input);
+    Deno.writeFileSync(flags.out, encoder.encode(interpreter.emit()));
+} else {
+    console.log(`This is Propose ${VERSION} REPL.`);
+    const interpreter = new Interpreter({});
+    while (true) {
+        const line = prompt(">");
+        if (line != null && line.trim() == "exit") break;
+        if (line == null || line.trim() == "") continue;
+        try {
+            interpreter.interpret(line);
+        } catch (e) {
+            console.log(e);
+            continue;
+        }
+        console.log();
+    }
 }
-
-const decoder = new TextDecoder("utf-8");
-const encoder = new TextEncoder();
-const input = decoder.decode(Deno.readFileSync(flags.in));
-const output = interpret(input, {});
-Deno.writeFileSync(flags.out, encoder.encode(output));

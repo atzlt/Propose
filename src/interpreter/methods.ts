@@ -26,7 +26,8 @@ export const METHODS: Record<string, Function> = {
     scale: m.calc.transform.scale,
 
     onCirc: m.calc.point_on.onCircle,
-    onSeg: (x: m.Point, y: m.Point, z: number) => m.calc.point_on.onSegment([x, y], z),
+    onSeg: (x: m.Point, y: m.Point, z: number) =>
+        m.calc.point_on.onSegment([x, y], z),
 
     cO: m.centers.circumcenter,
     cCirc: m.centers.circumcenter,
@@ -38,4 +39,4 @@ export const METHODS: Record<string, Function> = {
     cOrtho: m.centers.orthocenter,
     cG: m.centers.centroid,
     cCentr: m.centers.centroid,
-}
+};

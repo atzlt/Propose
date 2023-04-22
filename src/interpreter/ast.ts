@@ -1,91 +1,98 @@
 export type AstLine2P = {
-    kind: "line2p",
-    a: string,
-    b: string,
+    kind: "line2p";
+    a: string;
+    b: string;
 };
 
 export type AstTriangle = {
-    kind: "trig",
-    a: string,
-    b: string,
-    c: string,
+    kind: "trig";
+    a: string;
+    b: string;
+    c: string;
 };
 
 export type AstCircleOR = {
-    kind: "or",
-    center: string,
-    radius: string | number,
+    kind: "or";
+    center: string;
+    radius: string | number;
 };
 
 export type AstCircleOA = {
-    kind: "oa",
-    center: string,
-    thru: string,
+    kind: "oa";
+    center: string;
+    thru: string;
 };
 
 export type AstCircle3P = {
-    kind: "o3p",
-    a: string,
-    b: string,
-    c: string,
+    kind: "o3p";
+    a: string;
+    b: string;
+    c: string;
 };
 
 export type AstArg =
-    string | AstLine2P | AstTriangle | AstCircle3P | AstCircleOA | AstCircleOR | AstTriangle | number;
+    | string
+    | AstLine2P
+    | AstTriangle
+    | AstCircle3P
+    | AstCircleOA
+    | AstCircleOR
+    | AstTriangle
+    | number;
 
 export type AstExpr = {
-    method: string,
-    args: AstArg[],
+    method: string;
+    args: AstArg[];
 };
 
 export type AstCoord = {
-    x: number,
-    y: number,
+    x: number;
+    y: number;
 };
 
 export type AstDestruct = {
-    kind: "destruct",
-    tar1: string,
-    tar2: string,
+    kind: "destruct";
+    tar1: string;
+    tar2: string;
 };
 
 export type AstDirect = {
-    kind: "direct",
-    tar: string,
+    kind: "direct";
+    tar: string;
 };
 
 export type AstDeclLeft = AstDestruct | AstDirect;
 
 export type AstDecl = {
-    kind: "decl",
-    tar: AstDeclLeft,
-    val: AstExpr | AstCoord,
+    kind: "decl";
+    tar: AstDeclLeft;
+    val: AstExpr | AstCoord;
 };
 
 export type AstDrawStep = {
-    step: AstLine2P | AstCircleOA | AstCircleOR | AstCircle3P | string,
-    conf: AstConfig[],
+    step: AstLine2P | AstCircleOA | AstCircleOR | AstCircle3P | string;
+    conf: AstConfig[];
 };
 
 export type AstDraw = {
-    kind: "draw",
-    steps: AstDrawStep[],
+    kind: "draw";
+    steps: AstDrawStep[];
 };
 
 export type AstConfig = {
-    conf: string,
-    value: string,
+    conf: string;
+    value: string;
 };
 
 export type AstConfigLine = {
-    kind: "config",
+    kind: "config";
     confs: AstConfig[];
 };
 
 export type AstSaveFile = {
-    kind: "save",
-    path: string,
-}
+    kind: "save";
+    path: string;
+};
 
 export type AstFileLine = AstDecl | AstDraw | AstConfigLine | AstSaveFile;
 

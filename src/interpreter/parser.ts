@@ -86,11 +86,11 @@ export class File {
     public head: FileLine;
     public tail: FileLineTail[];
     public lines: ast.AstFileLine[];
-    constructor(head: FileLine, tail: FileLineTail[]){
+    constructor(head: FileLine, tail: FileLineTail[]) {
         this.head = head;
         this.tail = tail;
         this.lines = ((): ast.AstFileLine[] => {
-        return [head.val].concat(tail.map((arg, _) => arg.val));
+            return [head.val].concat(tail.map((arg, _) => arg.val));
         })();
     }
 }
@@ -98,14 +98,18 @@ export class FileLine {
     public kind: ASTKinds.FileLine = ASTKinds.FileLine;
     public ln: FileLine_$0;
     public val: ast.AstFileLine;
-    constructor(ln: FileLine_$0){
+    constructor(ln: FileLine_$0) {
         this.ln = ln;
         this.val = ((): ast.AstFileLine => {
-        return ln.val;
+            return ln.val;
         })();
     }
 }
-export type FileLine_$0 = FileLine_$0_1 | FileLine_$0_2 | FileLine_$0_3 | FileLine_$0_4;
+export type FileLine_$0 =
+    | FileLine_$0_1
+    | FileLine_$0_2
+    | FileLine_$0_3
+    | FileLine_$0_4;
 export type FileLine_$0_1 = Draw;
 export type FileLine_$0_2 = Decl;
 export type FileLine_$0_3 = ConfigLine;
@@ -114,10 +118,10 @@ export class FileLineTail {
     public kind: ASTKinds.FileLineTail = ASTKinds.FileLineTail;
     public ln: FileLine;
     public val: ast.AstFileLine;
-    constructor(ln: FileLine){
+    constructor(ln: FileLine) {
         this.ln = ln;
         this.val = ((): ast.AstFileLine => {
-        return ln.val;
+            return ln.val;
         })();
     }
 }
@@ -126,11 +130,11 @@ export class Decl {
     public l: DeclLeft;
     public r: Decl_$0;
     public val: ast.AstDecl;
-    constructor(l: DeclLeft, r: Decl_$0){
+    constructor(l: DeclLeft, r: Decl_$0) {
         this.l = l;
         this.r = r;
         this.val = ((): ast.AstDecl => {
-        return { kind: "decl", tar: l.val, val: r.val }
+            return { kind: "decl", tar: l.val, val: r.val };
         })();
     }
 }
@@ -141,10 +145,10 @@ export class DeclLeft {
     public kind: ASTKinds.DeclLeft = ASTKinds.DeclLeft;
     public tar: DeclLeft_$0;
     public val: ast.AstDeclLeft;
-    constructor(tar: DeclLeft_$0){
+    constructor(tar: DeclLeft_$0) {
         this.tar = tar;
         this.val = ((): ast.AstDeclLeft => {
-        return tar.val;
+            return tar.val;
         })();
     }
 }
@@ -156,11 +160,11 @@ export class Destruct {
     public tar1: Destruct_$0;
     public tar2: Destruct_$1;
     public val: ast.AstDestruct;
-    constructor(tar1: Destruct_$0, tar2: Destruct_$1){
+    constructor(tar1: Destruct_$0, tar2: Destruct_$1) {
         this.tar1 = tar1;
         this.tar2 = tar2;
         this.val = ((): ast.AstDestruct => {
-        return { kind: "destruct", tar1: tar1.val, tar2: tar2.val }
+            return { kind: "destruct", tar1: tar1.val, tar2: tar2.val };
         })();
     }
 }
@@ -174,10 +178,10 @@ export class Direct {
     public kind: ASTKinds.Direct = ASTKinds.Direct;
     public tar: Direct_$0;
     public val: ast.AstDirect;
-    constructor(tar: Direct_$0){
+    constructor(tar: Direct_$0) {
         this.tar = tar;
         this.val = ((): ast.AstDirect => {
-        return { kind: "direct", tar: tar.val };
+            return { kind: "direct", tar: tar.val };
         })();
     }
 }
@@ -190,15 +194,15 @@ export class Expr {
     public head: Arg;
     public tail: ArgTail[];
     public val: ast.AstExpr;
-    constructor(meth: Method, head: Arg, tail: ArgTail[]){
+    constructor(meth: Method, head: Arg, tail: ArgTail[]) {
         this.meth = meth;
         this.head = head;
         this.tail = tail;
         this.val = ((): ast.AstExpr => {
-        return {
-            method: meth.val,
-            args: [head.val].concat(tail.map((arg, _) => arg.val)),
-        }
+            return {
+                method: meth.val,
+                args: [head.val].concat(tail.map((arg, _) => arg.val)),
+            };
         })();
     }
 }
@@ -206,10 +210,10 @@ export class Method {
     public kind: ASTKinds.Method = ASTKinds.Method;
     public name: string;
     public val: string;
-    constructor(name: string){
+    constructor(name: string) {
         this.name = name;
         this.val = ((): string => {
-        return name;
+            return name;
         })();
     }
 }
@@ -217,14 +221,22 @@ export class Arg {
     public kind: ASTKinds.Arg = ASTKinds.Arg;
     public arg: Arg_$0;
     public val: ast.AstArg;
-    constructor(arg: Arg_$0){
+    constructor(arg: Arg_$0) {
         this.arg = arg;
         this.val = ((): ast.AstArg => {
-        return arg.val;
+            return arg.val;
         })();
     }
 }
-export type Arg_$0 = Arg_$0_1 | Arg_$0_2 | Arg_$0_3 | Arg_$0_4 | Arg_$0_5 | Arg_$0_6 | Arg_$0_7 | Arg_$0_8;
+export type Arg_$0 =
+    | Arg_$0_1
+    | Arg_$0_2
+    | Arg_$0_3
+    | Arg_$0_4
+    | Arg_$0_5
+    | Arg_$0_6
+    | Arg_$0_7
+    | Arg_$0_8;
 export type Arg_$0_1 = Triangle;
 export type Arg_$0_2 = Line2P;
 export type Arg_$0_3 = Circle3P;
@@ -237,10 +249,10 @@ export class ArgTail {
     public kind: ASTKinds.ArgTail = ASTKinds.ArgTail;
     public arg: Arg;
     public val: ast.AstArg;
-    constructor(arg: Arg){
+    constructor(arg: Arg) {
         this.arg = arg;
         this.val = ((): ast.AstArg => {
-        return arg.val;
+            return arg.val;
         })();
     }
 }
@@ -248,10 +260,10 @@ export class Coord {
     public kind: ASTKinds.Coord = ASTKinds.Coord;
     public c: Coord_$0;
     public val: ast.AstCoord;
-    constructor(c: Coord_$0){
+    constructor(c: Coord_$0) {
         this.c = c;
         this.val = ((): ast.AstCoord => {
-        return c.val;
+            return c.val;
         })();
     }
 }
@@ -263,11 +275,11 @@ export class RightCoord {
     public x: RNumber;
     public y: RNumber;
     public val: ast.AstCoord;
-    constructor(x: RNumber, y: RNumber){
+    constructor(x: RNumber, y: RNumber) {
         this.x = x;
         this.y = y;
         this.val = ((): ast.AstCoord => {
-        return { x: x.val, y: y.val };
+            return { x: x.val, y: y.val };
         })();
     }
 }
@@ -276,14 +288,14 @@ export class PolarCoord {
     public r: RNumber;
     public a: Number;
     public val: ast.AstCoord;
-    constructor(r: RNumber, a: Number){
+    constructor(r: RNumber, a: Number) {
         this.r = r;
         this.a = a;
         this.val = ((): ast.AstCoord => {
-        return {
-        x: r.val * Math.cos(a.val),
-        y: r.val * Math.sin(a.val)
-    };
+            return {
+                x: r.val * Math.cos(a.val),
+                y: r.val * Math.sin(a.val),
+            };
         })();
     }
 }
@@ -292,14 +304,14 @@ export class Draw {
     public head: DrawStep;
     public tail: DrawStepTail[];
     public val: ast.AstDraw;
-    constructor(head: DrawStep, tail: DrawStepTail[]){
+    constructor(head: DrawStep, tail: DrawStepTail[]) {
         this.head = head;
         this.tail = tail;
         this.val = ((): ast.AstDraw => {
-        return {
-        kind: "draw",
-        steps: [head.val].concat(tail.map((arg, _) => arg.val)),
-    };
+            return {
+                kind: "draw",
+                steps: [head.val].concat(tail.map((arg, _) => arg.val)),
+            };
         })();
     }
 }
@@ -308,18 +320,24 @@ export class DrawStep {
     public step: DrawStep_$0;
     public conf: Nullable<DrawConfig>;
     public val: ast.AstDrawStep;
-    constructor(step: DrawStep_$0, conf: Nullable<DrawConfig>){
+    constructor(step: DrawStep_$0, conf: Nullable<DrawConfig>) {
         this.step = step;
         this.conf = conf;
         this.val = ((): ast.AstDrawStep => {
-        return {
-        step: step.val,
-        conf: conf ? conf.val : [],
-    };
+            return {
+                step: step.val,
+                conf: conf ? conf.val : [],
+            };
         })();
     }
 }
-export type DrawStep_$0 = DrawStep_$0_1 | DrawStep_$0_2 | DrawStep_$0_3 | DrawStep_$0_4 | DrawStep_$0_5 | DrawStep_$0_6;
+export type DrawStep_$0 =
+    | DrawStep_$0_1
+    | DrawStep_$0_2
+    | DrawStep_$0_3
+    | DrawStep_$0_4
+    | DrawStep_$0_5
+    | DrawStep_$0_6;
 export type DrawStep_$0_1 = Line2P;
 export type DrawStep_$0_2 = Circle3P;
 export type DrawStep_$0_3 = CircleOR;
@@ -330,10 +348,10 @@ export class DrawStepTail {
     public kind: ASTKinds.DrawStepTail = ASTKinds.DrawStepTail;
     public step: DrawStep;
     public val: ast.AstDrawStep;
-    constructor(step: DrawStep){
+    constructor(step: DrawStep) {
         this.step = step;
         this.val = ((): ast.AstDrawStep => {
-        return step.val;
+            return step.val;
         })();
     }
 }
@@ -342,11 +360,11 @@ export class DrawConfig {
     public head: Config;
     public tail: ConfigTail[];
     public val: ast.AstConfig[];
-    constructor(head: Config, tail: ConfigTail[]){
+    constructor(head: Config, tail: ConfigTail[]) {
         this.head = head;
         this.tail = tail;
         this.val = ((): ast.AstConfig[] => {
-        return [head.val].concat(tail.map((arg, _) => arg.val))
+            return [head.val].concat(tail.map((arg, _) => arg.val));
         })();
     }
 }
@@ -355,14 +373,14 @@ export class ConfigLine {
     public head: Config;
     public tail: ConfigTail[];
     public val: ast.AstConfigLine;
-    constructor(head: Config, tail: ConfigTail[]){
+    constructor(head: Config, tail: ConfigTail[]) {
         this.head = head;
         this.tail = tail;
         this.val = ((): ast.AstConfigLine => {
-        return {
-        kind: "config",
-        confs: [head.val].concat(tail.map((arg, _) => arg.val)),
-    };
+            return {
+                kind: "config",
+                confs: [head.val].concat(tail.map((arg, _) => arg.val)),
+            };
         })();
     }
 }
@@ -371,12 +389,14 @@ export class Config {
     public conf: string;
     public value: string;
     public val: ast.AstConfig;
-    constructor(conf: string, value: string){
+    constructor(conf: string, value: string) {
         this.conf = conf;
         this.value = value;
         this.val = ((): ast.AstConfig => {
-        if (value.endsWith("deg")) value = (parseFloat(value) * Math.PI / 180).toString();
-        return { conf, value }
+            if (value.endsWith("deg")) {
+                value = (parseFloat(value) * Math.PI / 180).toString();
+            }
+            return { conf, value };
         })();
     }
 }
@@ -384,10 +404,10 @@ export class ConfigTail {
     public kind: ASTKinds.ConfigTail = ASTKinds.ConfigTail;
     public step: Config;
     public val: ast.AstConfig;
-    constructor(step: Config){
+    constructor(step: Config) {
         this.step = step;
         this.val = ((): ast.AstConfig => {
-        return step.val;
+            return step.val;
         })();
     }
 }
@@ -395,10 +415,10 @@ export class SaveFile {
     public kind: ASTKinds.SaveFile = ASTKinds.SaveFile;
     public path: string;
     public val: ast.AstSaveFile;
-    constructor(path: string){
+    constructor(path: string) {
         this.path = path;
         this.val = ((): ast.AstSaveFile => {
-        return { kind: "save", path };
+            return { kind: "save", path };
         })();
     }
 }
@@ -407,11 +427,11 @@ export class Line2P {
     public a: PointID;
     public b: PointID;
     public val: ast.AstLine2P;
-    constructor(a: PointID, b: PointID){
+    constructor(a: PointID, b: PointID) {
         this.a = a;
         this.b = b;
         this.val = ((): ast.AstLine2P => {
-        return { kind: "line2p", a: a.val, b: b.val }
+            return { kind: "line2p", a: a.val, b: b.val };
         })();
     }
 }
@@ -421,12 +441,12 @@ export class Triangle {
     public b: PointID;
     public c: PointID;
     public val: ast.AstTriangle;
-    constructor(a: PointID, b: PointID, c: PointID){
+    constructor(a: PointID, b: PointID, c: PointID) {
         this.a = a;
         this.b = b;
         this.c = c;
         this.val = ((): ast.AstTriangle => {
-        return { kind: "trig", a: a.val, b: b.val, c: c.val }
+            return { kind: "trig", a: a.val, b: b.val, c: c.val };
         })();
     }
 }
@@ -435,11 +455,11 @@ export class CircleOR {
     public o: PointID;
     public r: CircleOR_$0;
     public val: ast.AstCircleOR;
-    constructor(o: PointID, r: CircleOR_$0){
+    constructor(o: PointID, r: CircleOR_$0) {
         this.o = o;
         this.r = r;
         this.val = ((): ast.AstCircleOR => {
-        return { kind: "or", center: o.val, radius: r.val };
+            return { kind: "or", center: o.val, radius: r.val };
         })();
     }
 }
@@ -451,11 +471,11 @@ export class CircleOA {
     public o: PointID;
     public a: PointID;
     public val: ast.AstCircleOA;
-    constructor(o: PointID, a: PointID){
+    constructor(o: PointID, a: PointID) {
         this.o = o;
         this.a = a;
         this.val = ((): ast.AstCircleOA => {
-        return { kind: "oa", center: o.val, thru: a.val };
+            return { kind: "oa", center: o.val, thru: a.val };
         })();
     }
 }
@@ -465,12 +485,12 @@ export class Circle3P {
     public b: PointID;
     public c: PointID;
     public val: ast.AstCircle3P;
-    constructor(a: PointID, b: PointID, c: PointID){
+    constructor(a: PointID, b: PointID, c: PointID) {
         this.a = a;
         this.b = b;
         this.c = c;
         this.val = ((): ast.AstCircle3P => {
-        return { kind: "o3p", a: a.val, b: b.val, c: c.val };
+            return { kind: "o3p", a: a.val, b: b.val, c: c.val };
         })();
     }
 }
@@ -478,10 +498,10 @@ export class PointID {
     public kind: ASTKinds.PointID = ASTKinds.PointID;
     public name: string;
     public val: string;
-    constructor(name: string){
+    constructor(name: string) {
         this.name = name;
         this.val = ((): string => {
-        return name;
+            return name;
         })();
     }
 }
@@ -489,10 +509,10 @@ export class CommonID {
     public kind: ASTKinds.CommonID = ASTKinds.CommonID;
     public name: string;
     public val: string;
-    constructor(name: string){
+    constructor(name: string) {
         this.name = name;
         this.val = ((): string => {
-        return name;
+            return name;
         })();
     }
 }
@@ -500,10 +520,10 @@ export class Number {
     public kind: ASTKinds.Number = ASTKinds.Number;
     public num: Number_$0;
     public val: number;
-    constructor(num: Number_$0){
+    constructor(num: Number_$0) {
         this.num = num;
         this.val = ((): number => {
-        return num.val;
+            return num.val;
         })();
     }
 }
@@ -514,10 +534,10 @@ export class RNumber {
     public kind: ASTKinds.RNumber = ASTKinds.RNumber;
     public num: string;
     public val: number;
-    constructor(num: string){
+    constructor(num: string) {
         this.num = num;
         this.val = ((): number => {
-        return parseFloat(num);
+            return parseFloat(num);
         })();
     }
 }
@@ -525,10 +545,10 @@ export class Degree {
     public kind: ASTKinds.Degree = ASTKinds.Degree;
     public num: RNumber;
     public val: number;
-    constructor(num: RNumber){
+    constructor(num: RNumber) {
         this.num = num;
         this.val = ((): number => {
-        return num.val * Math.PI / 180;
+            return num.val * Math.PI / 180;
         })();
     }
 }
@@ -540,7 +560,7 @@ export class Parser {
     private negating: boolean = false;
     private memoSafe: boolean = true;
     constructor(input: string) {
-        this.pos = {overallPos: 0, line: 1, offset: 0};
+        this.pos = { overallPos: 0, line: 1, offset: 0 };
         this.input = input;
     }
     public reset(pos: PosInfo) {
@@ -552,39 +572,49 @@ export class Parser {
     public clearMemos(): void {
     }
     public matchFile($$dpth: number, $$cr?: ErrorTracker): Nullable<File> {
-        return this.run<File>($$dpth,
-            () => {
-                let $scope$head: Nullable<FileLine>;
-                let $scope$tail: Nullable<FileLineTail[]>;
-                let $$res: Nullable<File> = null;
-                if (true
-                    && ((this.matchNewLine($$dpth + 1, $$cr)) || true)
-                    && ($scope$head = this.matchFileLine($$dpth + 1, $$cr)) !== null
-                    && ($scope$tail = this.loop<FileLineTail>(() => this.matchFileLineTail($$dpth + 1, $$cr), true)) !== null
-                    && ((this.matchNewLine($$dpth + 1, $$cr)) || true)
-                    && this.match$EOF($$cr) !== null
-                ) {
-                    $$res = new File($scope$head, $scope$tail);
-                }
-                return $$res;
-            });
+        return this.run<File>($$dpth, () => {
+            let $scope$head: Nullable<FileLine>;
+            let $scope$tail: Nullable<FileLineTail[]>;
+            let $$res: Nullable<File> = null;
+            if (
+                true &&
+                ((this.matchNewLine($$dpth + 1, $$cr)) || true) &&
+                ($scope$head = this.matchFileLine($$dpth + 1, $$cr)) !== null &&
+                ($scope$tail = this.loop<FileLineTail>(
+                        () => this.matchFileLineTail($$dpth + 1, $$cr),
+                        true,
+                    )) !== null &&
+                ((this.matchNewLine($$dpth + 1, $$cr)) || true) &&
+                this.match$EOF($$cr) !== null
+            ) {
+                $$res = new File($scope$head, $scope$tail);
+            }
+            return $$res;
+        });
     }
-    public matchFileLine($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine> {
-        return this.run<FileLine>($$dpth,
-            () => {
-                let $scope$ln: Nullable<FileLine_$0>;
-                let $$res: Nullable<FileLine> = null;
-                if (true
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$ln = this.matchFileLine_$0($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                ) {
-                    $$res = new FileLine($scope$ln);
-                }
-                return $$res;
-            });
+    public matchFileLine(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLine> {
+        return this.run<FileLine>($$dpth, () => {
+            let $scope$ln: Nullable<FileLine_$0>;
+            let $$res: Nullable<FileLine> = null;
+            if (
+                true &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$ln = this.matchFileLine_$0($$dpth + 1, $$cr)) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true)
+            ) {
+                $$res = new FileLine($scope$ln);
+            }
+            return $$res;
+        });
     }
-    public matchFileLine_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0> {
+    public matchFileLine_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLine_$0> {
         return this.choice<FileLine_$0>([
             () => this.matchFileLine_$0_1($$dpth + 1, $$cr),
             () => this.matchFileLine_$0_2($$dpth + 1, $$cr),
@@ -592,198 +622,274 @@ export class Parser {
             () => this.matchFileLine_$0_4($$dpth + 1, $$cr),
         ]);
     }
-    public matchFileLine_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_1> {
+    public matchFileLine_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLine_$0_1> {
         return this.matchDraw($$dpth + 1, $$cr);
     }
-    public matchFileLine_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_2> {
+    public matchFileLine_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLine_$0_2> {
         return this.matchDecl($$dpth + 1, $$cr);
     }
-    public matchFileLine_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_3> {
+    public matchFileLine_$0_3(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLine_$0_3> {
         return this.matchConfigLine($$dpth + 1, $$cr);
     }
-    public matchFileLine_$0_4($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_4> {
+    public matchFileLine_$0_4(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLine_$0_4> {
         return this.matchSaveFile($$dpth + 1, $$cr);
     }
-    public matchFileLineTail($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLineTail> {
-        return this.run<FileLineTail>($$dpth,
-            () => {
-                let $scope$ln: Nullable<FileLine>;
-                let $$res: Nullable<FileLineTail> = null;
-                if (true
-                    && this.matchNewLine($$dpth + 1, $$cr) !== null
-                    && ($scope$ln = this.matchFileLine($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new FileLineTail($scope$ln);
-                }
-                return $$res;
-            });
+    public matchFileLineTail(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<FileLineTail> {
+        return this.run<FileLineTail>($$dpth, () => {
+            let $scope$ln: Nullable<FileLine>;
+            let $$res: Nullable<FileLineTail> = null;
+            if (
+                true &&
+                this.matchNewLine($$dpth + 1, $$cr) !== null &&
+                ($scope$ln = this.matchFileLine($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new FileLineTail($scope$ln);
+            }
+            return $$res;
+        });
     }
     public matchDecl($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl> {
-        return this.run<Decl>($$dpth,
-            () => {
-                let $scope$l: Nullable<DeclLeft>;
-                let $scope$r: Nullable<Decl_$0>;
-                let $$res: Nullable<Decl> = null;
-                if (true
-                    && ($scope$l = this.matchDeclLeft($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$r = this.matchDecl_$0($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Decl($scope$l, $scope$r);
-                }
-                return $$res;
-            });
+        return this.run<Decl>($$dpth, () => {
+            let $scope$l: Nullable<DeclLeft>;
+            let $scope$r: Nullable<Decl_$0>;
+            let $$res: Nullable<Decl> = null;
+            if (
+                true &&
+                ($scope$l = this.matchDeclLeft($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$r = this.matchDecl_$0($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Decl($scope$l, $scope$r);
+            }
+            return $$res;
+        });
     }
-    public matchDecl_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl_$0> {
+    public matchDecl_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Decl_$0> {
         return this.choice<Decl_$0>([
             () => this.matchDecl_$0_1($$dpth + 1, $$cr),
             () => this.matchDecl_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchDecl_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl_$0_1> {
+    public matchDecl_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Decl_$0_1> {
         return this.matchExpr($$dpth + 1, $$cr);
     }
-    public matchDecl_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl_$0_2> {
+    public matchDecl_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Decl_$0_2> {
         return this.matchCoord($$dpth + 1, $$cr);
     }
-    public matchDeclLeft($$dpth: number, $$cr?: ErrorTracker): Nullable<DeclLeft> {
-        return this.run<DeclLeft>($$dpth,
-            () => {
-                let $scope$tar: Nullable<DeclLeft_$0>;
-                let $$res: Nullable<DeclLeft> = null;
-                if (true
-                    && ($scope$tar = this.matchDeclLeft_$0($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new DeclLeft($scope$tar);
-                }
-                return $$res;
-            });
+    public matchDeclLeft(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DeclLeft> {
+        return this.run<DeclLeft>($$dpth, () => {
+            let $scope$tar: Nullable<DeclLeft_$0>;
+            let $$res: Nullable<DeclLeft> = null;
+            if (
+                true &&
+                ($scope$tar = this.matchDeclLeft_$0($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new DeclLeft($scope$tar);
+            }
+            return $$res;
+        });
     }
-    public matchDeclLeft_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<DeclLeft_$0> {
+    public matchDeclLeft_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DeclLeft_$0> {
         return this.choice<DeclLeft_$0>([
             () => this.matchDeclLeft_$0_1($$dpth + 1, $$cr),
             () => this.matchDeclLeft_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchDeclLeft_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<DeclLeft_$0_1> {
+    public matchDeclLeft_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DeclLeft_$0_1> {
         return this.matchDestruct($$dpth + 1, $$cr);
     }
-    public matchDeclLeft_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<DeclLeft_$0_2> {
+    public matchDeclLeft_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DeclLeft_$0_2> {
         return this.matchDirect($$dpth + 1, $$cr);
     }
-    public matchDestruct($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct> {
-        return this.run<Destruct>($$dpth,
-            () => {
-                let $scope$tar1: Nullable<Destruct_$0>;
-                let $scope$tar2: Nullable<Destruct_$1>;
-                let $$res: Nullable<Destruct> = null;
-                if (true
-                    && ($scope$tar1 = this.matchDestruct_$0($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$tar2 = this.matchDestruct_$1($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Destruct($scope$tar1, $scope$tar2);
-                }
-                return $$res;
-            });
+    public matchDestruct(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct> {
+        return this.run<Destruct>($$dpth, () => {
+            let $scope$tar1: Nullable<Destruct_$0>;
+            let $scope$tar2: Nullable<Destruct_$1>;
+            let $$res: Nullable<Destruct> = null;
+            if (
+                true &&
+                ($scope$tar1 = this.matchDestruct_$0($$dpth + 1, $$cr)) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$tar2 = this.matchDestruct_$1($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Destruct($scope$tar1, $scope$tar2);
+            }
+            return $$res;
+        });
     }
-    public matchDestruct_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct_$0> {
+    public matchDestruct_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct_$0> {
         return this.choice<Destruct_$0>([
             () => this.matchDestruct_$0_1($$dpth + 1, $$cr),
             () => this.matchDestruct_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchDestruct_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct_$0_1> {
+    public matchDestruct_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct_$0_1> {
         return this.matchPointID($$dpth + 1, $$cr);
     }
-    public matchDestruct_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct_$0_2> {
+    public matchDestruct_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct_$0_2> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
-    public matchDestruct_$1($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct_$1> {
+    public matchDestruct_$1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct_$1> {
         return this.choice<Destruct_$1>([
             () => this.matchDestruct_$1_1($$dpth + 1, $$cr),
             () => this.matchDestruct_$1_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchDestruct_$1_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct_$1_1> {
+    public matchDestruct_$1_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct_$1_1> {
         return this.matchPointID($$dpth + 1, $$cr);
     }
-    public matchDestruct_$1_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Destruct_$1_2> {
+    public matchDestruct_$1_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Destruct_$1_2> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
     public matchDirect($$dpth: number, $$cr?: ErrorTracker): Nullable<Direct> {
-        return this.run<Direct>($$dpth,
-            () => {
-                let $scope$tar: Nullable<Direct_$0>;
-                let $$res: Nullable<Direct> = null;
-                if (true
-                    && ($scope$tar = this.matchDirect_$0($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Direct($scope$tar);
-                }
-                return $$res;
-            });
+        return this.run<Direct>($$dpth, () => {
+            let $scope$tar: Nullable<Direct_$0>;
+            let $$res: Nullable<Direct> = null;
+            if (
+                true &&
+                ($scope$tar = this.matchDirect_$0($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Direct($scope$tar);
+            }
+            return $$res;
+        });
     }
-    public matchDirect_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Direct_$0> {
+    public matchDirect_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Direct_$0> {
         return this.choice<Direct_$0>([
             () => this.matchDirect_$0_1($$dpth + 1, $$cr),
             () => this.matchDirect_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchDirect_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Direct_$0_1> {
+    public matchDirect_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Direct_$0_1> {
         return this.matchPointID($$dpth + 1, $$cr);
     }
-    public matchDirect_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Direct_$0_2> {
+    public matchDirect_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Direct_$0_2> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
     public matchExpr($$dpth: number, $$cr?: ErrorTracker): Nullable<Expr> {
-        return this.run<Expr>($$dpth,
-            () => {
-                let $scope$meth: Nullable<Method>;
-                let $scope$head: Nullable<Arg>;
-                let $scope$tail: Nullable<ArgTail[]>;
-                let $$res: Nullable<Expr> = null;
-                if (true
-                    && ($scope$meth = this.matchMethod($$dpth + 1, $$cr)) !== null
-                    && this.matchWS($$dpth + 1, $$cr) !== null
-                    && ($scope$head = this.matchArg($$dpth + 1, $$cr)) !== null
-                    && ($scope$tail = this.loop<ArgTail>(() => this.matchArgTail($$dpth + 1, $$cr), true)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                ) {
-                    $$res = new Expr($scope$meth, $scope$head, $scope$tail);
-                }
-                return $$res;
-            });
+        return this.run<Expr>($$dpth, () => {
+            let $scope$meth: Nullable<Method>;
+            let $scope$head: Nullable<Arg>;
+            let $scope$tail: Nullable<ArgTail[]>;
+            let $$res: Nullable<Expr> = null;
+            if (
+                true &&
+                ($scope$meth = this.matchMethod($$dpth + 1, $$cr)) !== null &&
+                this.matchWS($$dpth + 1, $$cr) !== null &&
+                ($scope$head = this.matchArg($$dpth + 1, $$cr)) !== null &&
+                ($scope$tail = this.loop<ArgTail>(
+                        () => this.matchArgTail($$dpth + 1, $$cr),
+                        true,
+                    )) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true)
+            ) {
+                $$res = new Expr($scope$meth, $scope$head, $scope$tail);
+            }
+            return $$res;
+        });
     }
     public matchMethod($$dpth: number, $$cr?: ErrorTracker): Nullable<Method> {
-        return this.run<Method>($$dpth,
-            () => {
-                let $scope$name: Nullable<string>;
-                let $$res: Nullable<Method> = null;
-                if (true
-                    && ($scope$name = this.regexAccept(String.raw`(?:[A-Za-z0-9\'!@#%^*]+)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Method($scope$name);
-                }
-                return $$res;
-            });
+        return this.run<Method>($$dpth, () => {
+            let $scope$name: Nullable<string>;
+            let $$res: Nullable<Method> = null;
+            if (
+                true &&
+                ($scope$name = this.regexAccept(
+                        String.raw`(?:[A-Za-z0-9\'!@#%^*]+)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null
+            ) {
+                $$res = new Method($scope$name);
+            }
+            return $$res;
+        });
     }
     public matchArg($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg> {
-        return this.run<Arg>($$dpth,
-            () => {
-                let $scope$arg: Nullable<Arg_$0>;
-                let $$res: Nullable<Arg> = null;
-                if (true
-                    && ($scope$arg = this.matchArg_$0($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Arg($scope$arg);
-                }
-                return $$res;
-            });
+        return this.run<Arg>($$dpth, () => {
+            let $scope$arg: Nullable<Arg_$0>;
+            let $$res: Nullable<Arg> = null;
+            if (
+                true &&
+                ($scope$arg = this.matchArg_$0($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Arg($scope$arg);
+            }
+            return $$res;
+        });
     }
     public matchArg_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0> {
         return this.choice<Arg_$0>([
@@ -797,149 +903,207 @@ export class Parser {
             () => this.matchArg_$0_8($$dpth + 1, $$cr),
         ]);
     }
-    public matchArg_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_1> {
+    public matchArg_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_1> {
         return this.matchTriangle($$dpth + 1, $$cr);
     }
-    public matchArg_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_2> {
+    public matchArg_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_2> {
         return this.matchLine2P($$dpth + 1, $$cr);
     }
-    public matchArg_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_3> {
+    public matchArg_$0_3(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_3> {
         return this.matchCircle3P($$dpth + 1, $$cr);
     }
-    public matchArg_$0_4($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_4> {
+    public matchArg_$0_4(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_4> {
         return this.matchCircleOR($$dpth + 1, $$cr);
     }
-    public matchArg_$0_5($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_5> {
+    public matchArg_$0_5(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_5> {
         return this.matchCircleOA($$dpth + 1, $$cr);
     }
-    public matchArg_$0_6($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_6> {
+    public matchArg_$0_6(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_6> {
         return this.matchPointID($$dpth + 1, $$cr);
     }
-    public matchArg_$0_7($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_7> {
+    public matchArg_$0_7(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_7> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
-    public matchArg_$0_8($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_8> {
+    public matchArg_$0_8(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Arg_$0_8> {
         return this.matchNumber($$dpth + 1, $$cr);
     }
-    public matchArgTail($$dpth: number, $$cr?: ErrorTracker): Nullable<ArgTail> {
-        return this.run<ArgTail>($$dpth,
-            () => {
-                let $scope$arg: Nullable<Arg>;
-                let $$res: Nullable<ArgTail> = null;
-                if (true
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$arg = this.matchArg($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new ArgTail($scope$arg);
-                }
-                return $$res;
-            });
+    public matchArgTail(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<ArgTail> {
+        return this.run<ArgTail>($$dpth, () => {
+            let $scope$arg: Nullable<Arg>;
+            let $$res: Nullable<ArgTail> = null;
+            if (
+                true &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$arg = this.matchArg($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new ArgTail($scope$arg);
+            }
+            return $$res;
+        });
     }
     public matchCoord($$dpth: number, $$cr?: ErrorTracker): Nullable<Coord> {
-        return this.run<Coord>($$dpth,
-            () => {
-                let $scope$c: Nullable<Coord_$0>;
-                let $$res: Nullable<Coord> = null;
-                if (true
-                    && ($scope$c = this.matchCoord_$0($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Coord($scope$c);
-                }
-                return $$res;
-            });
+        return this.run<Coord>($$dpth, () => {
+            let $scope$c: Nullable<Coord_$0>;
+            let $$res: Nullable<Coord> = null;
+            if (
+                true &&
+                ($scope$c = this.matchCoord_$0($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Coord($scope$c);
+            }
+            return $$res;
+        });
     }
-    public matchCoord_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Coord_$0> {
+    public matchCoord_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Coord_$0> {
         return this.choice<Coord_$0>([
             () => this.matchCoord_$0_1($$dpth + 1, $$cr),
             () => this.matchCoord_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchCoord_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Coord_$0_1> {
+    public matchCoord_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Coord_$0_1> {
         return this.matchRightCoord($$dpth + 1, $$cr);
     }
-    public matchCoord_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Coord_$0_2> {
+    public matchCoord_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Coord_$0_2> {
         return this.matchPolarCoord($$dpth + 1, $$cr);
     }
-    public matchRightCoord($$dpth: number, $$cr?: ErrorTracker): Nullable<RightCoord> {
-        return this.run<RightCoord>($$dpth,
-            () => {
-                let $scope$x: Nullable<RNumber>;
-                let $scope$y: Nullable<RNumber>;
-                let $$res: Nullable<RightCoord> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$x = this.matchRNumber($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$y = this.matchRNumber($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new RightCoord($scope$x, $scope$y);
-                }
-                return $$res;
-            });
+    public matchRightCoord(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<RightCoord> {
+        return this.run<RightCoord>($$dpth, () => {
+            let $scope$x: Nullable<RNumber>;
+            let $scope$y: Nullable<RNumber>;
+            let $$res: Nullable<RightCoord> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$x = this.matchRNumber($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$y = this.matchRNumber($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new RightCoord($scope$x, $scope$y);
+            }
+            return $$res;
+        });
     }
-    public matchPolarCoord($$dpth: number, $$cr?: ErrorTracker): Nullable<PolarCoord> {
-        return this.run<PolarCoord>($$dpth,
-            () => {
-                let $scope$r: Nullable<RNumber>;
-                let $scope$a: Nullable<Number>;
-                let $$res: Nullable<PolarCoord> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$r = this.matchRNumber($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?::)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$a = this.matchNumber($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new PolarCoord($scope$r, $scope$a);
-                }
-                return $$res;
-            });
+    public matchPolarCoord(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<PolarCoord> {
+        return this.run<PolarCoord>($$dpth, () => {
+            let $scope$r: Nullable<RNumber>;
+            let $scope$a: Nullable<Number>;
+            let $$res: Nullable<PolarCoord> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$r = this.matchRNumber($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?::)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$a = this.matchNumber($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new PolarCoord($scope$r, $scope$a);
+            }
+            return $$res;
+        });
     }
     public matchDraw($$dpth: number, $$cr?: ErrorTracker): Nullable<Draw> {
-        return this.run<Draw>($$dpth,
-            () => {
-                let $scope$head: Nullable<DrawStep>;
-                let $scope$tail: Nullable<DrawStepTail[]>;
-                let $$res: Nullable<Draw> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:draw)`, $$dpth + 1, $$cr) !== null
-                    && this.matchWS($$dpth + 1, $$cr) !== null
-                    && ($scope$head = this.matchDrawStep($$dpth + 1, $$cr)) !== null
-                    && ($scope$tail = this.loop<DrawStepTail>(() => this.matchDrawStepTail($$dpth + 1, $$cr), true)) !== null
-                ) {
-                    $$res = new Draw($scope$head, $scope$tail);
-                }
-                return $$res;
-            });
+        return this.run<Draw>($$dpth, () => {
+            let $scope$head: Nullable<DrawStep>;
+            let $scope$tail: Nullable<DrawStepTail[]>;
+            let $$res: Nullable<Draw> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:draw)`, $$dpth + 1, $$cr) !==
+                    null &&
+                this.matchWS($$dpth + 1, $$cr) !== null &&
+                ($scope$head = this.matchDrawStep($$dpth + 1, $$cr)) !== null &&
+                ($scope$tail = this.loop<DrawStepTail>(
+                        () => this.matchDrawStepTail($$dpth + 1, $$cr),
+                        true,
+                    )) !== null
+            ) {
+                $$res = new Draw($scope$head, $scope$tail);
+            }
+            return $$res;
+        });
     }
-    public matchDrawStep($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep> {
-        return this.run<DrawStep>($$dpth,
-            () => {
-                let $scope$step: Nullable<DrawStep_$0>;
-                let $scope$conf: Nullable<Nullable<DrawConfig>>;
-                let $$res: Nullable<DrawStep> = null;
-                if (true
-                    && ($scope$step = this.matchDrawStep_$0($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && (($scope$conf = this.matchDrawConfig($$dpth + 1, $$cr)) || true)
-                ) {
-                    $$res = new DrawStep($scope$step, $scope$conf);
-                }
-                return $$res;
-            });
+    public matchDrawStep(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep> {
+        return this.run<DrawStep>($$dpth, () => {
+            let $scope$step: Nullable<DrawStep_$0>;
+            let $scope$conf: Nullable<Nullable<DrawConfig>>;
+            let $$res: Nullable<DrawStep> = null;
+            if (
+                true &&
+                ($scope$step = this.matchDrawStep_$0($$dpth + 1, $$cr)) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                (($scope$conf = this.matchDrawConfig($$dpth + 1, $$cr)) || true)
+            ) {
+                $$res = new DrawStep($scope$step, $scope$conf);
+            }
+            return $$res;
+        });
     }
-    public matchDrawStep_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0> {
+    public matchDrawStep_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0> {
         return this.choice<DrawStep_$0>([
             () => this.matchDrawStep_$0_1($$dpth + 1, $$cr),
             () => this.matchDrawStep_$0_2($$dpth + 1, $$cr),
@@ -949,318 +1113,434 @@ export class Parser {
             () => this.matchDrawStep_$0_6($$dpth + 1, $$cr),
         ]);
     }
-    public matchDrawStep_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_1> {
+    public matchDrawStep_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0_1> {
         return this.matchLine2P($$dpth + 1, $$cr);
     }
-    public matchDrawStep_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_2> {
+    public matchDrawStep_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0_2> {
         return this.matchCircle3P($$dpth + 1, $$cr);
     }
-    public matchDrawStep_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_3> {
+    public matchDrawStep_$0_3(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0_3> {
         return this.matchCircleOR($$dpth + 1, $$cr);
     }
-    public matchDrawStep_$0_4($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_4> {
+    public matchDrawStep_$0_4(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0_4> {
         return this.matchCircleOA($$dpth + 1, $$cr);
     }
-    public matchDrawStep_$0_5($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_5> {
+    public matchDrawStep_$0_5(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0_5> {
         return this.matchPointID($$dpth + 1, $$cr);
     }
-    public matchDrawStep_$0_6($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep_$0_6> {
+    public matchDrawStep_$0_6(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStep_$0_6> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
-    public matchDrawStepTail($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStepTail> {
-        return this.run<DrawStepTail>($$dpth,
-            () => {
-                let $scope$step: Nullable<DrawStep>;
-                let $$res: Nullable<DrawStepTail> = null;
-                if (true
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$step = this.matchDrawStep($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new DrawStepTail($scope$step);
-                }
-                return $$res;
-            });
+    public matchDrawStepTail(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawStepTail> {
+        return this.run<DrawStepTail>($$dpth, () => {
+            let $scope$step: Nullable<DrawStep>;
+            let $$res: Nullable<DrawStepTail> = null;
+            if (
+                true &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$step = this.matchDrawStep($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new DrawStepTail($scope$step);
+            }
+            return $$res;
+        });
     }
-    public matchDrawConfig($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawConfig> {
-        return this.run<DrawConfig>($$dpth,
-            () => {
-                let $scope$head: Nullable<Config>;
-                let $scope$tail: Nullable<ConfigTail[]>;
-                let $$res: Nullable<DrawConfig> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:\[)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$head = this.matchConfig($$dpth + 1, $$cr)) !== null
-                    && ($scope$tail = this.loop<ConfigTail>(() => this.matchConfigTail($$dpth + 1, $$cr), true)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:\])`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new DrawConfig($scope$head, $scope$tail);
-                }
-                return $$res;
-            });
+    public matchDrawConfig(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<DrawConfig> {
+        return this.run<DrawConfig>($$dpth, () => {
+            let $scope$head: Nullable<Config>;
+            let $scope$tail: Nullable<ConfigTail[]>;
+            let $$res: Nullable<DrawConfig> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:\[)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$head = this.matchConfig($$dpth + 1, $$cr)) !== null &&
+                ($scope$tail = this.loop<ConfigTail>(
+                        () => this.matchConfigTail($$dpth + 1, $$cr),
+                        true,
+                    )) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:\])`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new DrawConfig($scope$head, $scope$tail);
+            }
+            return $$res;
+        });
     }
-    public matchConfigLine($$dpth: number, $$cr?: ErrorTracker): Nullable<ConfigLine> {
-        return this.run<ConfigLine>($$dpth,
-            () => {
-                let $scope$head: Nullable<Config>;
-                let $scope$tail: Nullable<ConfigTail[]>;
-                let $$res: Nullable<ConfigLine> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:config)`, $$dpth + 1, $$cr) !== null
-                    && this.matchWS($$dpth + 1, $$cr) !== null
-                    && ($scope$head = this.matchConfig($$dpth + 1, $$cr)) !== null
-                    && ($scope$tail = this.loop<ConfigTail>(() => this.matchConfigTail($$dpth + 1, $$cr), true)) !== null
-                ) {
-                    $$res = new ConfigLine($scope$head, $scope$tail);
-                }
-                return $$res;
-            });
+    public matchConfigLine(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<ConfigLine> {
+        return this.run<ConfigLine>($$dpth, () => {
+            let $scope$head: Nullable<Config>;
+            let $scope$tail: Nullable<ConfigTail[]>;
+            let $$res: Nullable<ConfigLine> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:config)`, $$dpth + 1, $$cr) !==
+                    null &&
+                this.matchWS($$dpth + 1, $$cr) !== null &&
+                ($scope$head = this.matchConfig($$dpth + 1, $$cr)) !== null &&
+                ($scope$tail = this.loop<ConfigTail>(
+                        () => this.matchConfigTail($$dpth + 1, $$cr),
+                        true,
+                    )) !== null
+            ) {
+                $$res = new ConfigLine($scope$head, $scope$tail);
+            }
+            return $$res;
+        });
     }
     public matchConfig($$dpth: number, $$cr?: ErrorTracker): Nullable<Config> {
-        return this.run<Config>($$dpth,
-            () => {
-                let $scope$conf: Nullable<string>;
-                let $scope$value: Nullable<string>;
-                let $$res: Nullable<Config> = null;
-                if (true
-                    && ($scope$conf = this.regexAccept(String.raw`(?:[A-Za-z_]+)`, $$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$value = this.regexAccept(String.raw`(?:[^\]\)\n\r,]*)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Config($scope$conf, $scope$value);
-                }
-                return $$res;
-            });
+        return this.run<Config>($$dpth, () => {
+            let $scope$conf: Nullable<string>;
+            let $scope$value: Nullable<string>;
+            let $$res: Nullable<Config> = null;
+            if (
+                true &&
+                ($scope$conf = this.regexAccept(
+                        String.raw`(?:[A-Za-z_]+)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$value = this.regexAccept(
+                        String.raw`(?:[^\]\)\n\r,]*)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null
+            ) {
+                $$res = new Config($scope$conf, $scope$value);
+            }
+            return $$res;
+        });
     }
-    public matchConfigTail($$dpth: number, $$cr?: ErrorTracker): Nullable<ConfigTail> {
-        return this.run<ConfigTail>($$dpth,
-            () => {
-                let $scope$step: Nullable<Config>;
-                let $$res: Nullable<ConfigTail> = null;
-                if (true
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$step = this.matchConfig($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new ConfigTail($scope$step);
-                }
-                return $$res;
-            });
+    public matchConfigTail(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<ConfigTail> {
+        return this.run<ConfigTail>($$dpth, () => {
+            let $scope$step: Nullable<Config>;
+            let $$res: Nullable<ConfigTail> = null;
+            if (
+                true &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$step = this.matchConfig($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new ConfigTail($scope$step);
+            }
+            return $$res;
+        });
     }
-    public matchSaveFile($$dpth: number, $$cr?: ErrorTracker): Nullable<SaveFile> {
-        return this.run<SaveFile>($$dpth,
-            () => {
-                let $scope$path: Nullable<string>;
-                let $$res: Nullable<SaveFile> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:save)`, $$dpth + 1, $$cr) !== null
-                    && this.matchWS($$dpth + 1, $$cr) !== null
-                    && ($scope$path = this.regexAccept(String.raw`(?:[^\n\r]+)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new SaveFile($scope$path);
-                }
-                return $$res;
-            });
+    public matchSaveFile(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<SaveFile> {
+        return this.run<SaveFile>($$dpth, () => {
+            let $scope$path: Nullable<string>;
+            let $$res: Nullable<SaveFile> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:save)`, $$dpth + 1, $$cr) !==
+                    null &&
+                this.matchWS($$dpth + 1, $$cr) !== null &&
+                ($scope$path = this.regexAccept(
+                        String.raw`(?:[^\n\r]+)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null
+            ) {
+                $$res = new SaveFile($scope$path);
+            }
+            return $$res;
+        });
     }
     public matchLine2P($$dpth: number, $$cr?: ErrorTracker): Nullable<Line2P> {
-        return this.run<Line2P>($$dpth,
-            () => {
-                let $scope$a: Nullable<PointID>;
-                let $scope$b: Nullable<PointID>;
-                let $$res: Nullable<Line2P> = null;
-                if (true
-                    && ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Line2P($scope$a, $scope$b);
-                }
-                return $$res;
-            });
+        return this.run<Line2P>($$dpth, () => {
+            let $scope$a: Nullable<PointID>;
+            let $scope$b: Nullable<PointID>;
+            let $$res: Nullable<Line2P> = null;
+            if (
+                true &&
+                ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Line2P($scope$a, $scope$b);
+            }
+            return $$res;
+        });
     }
-    public matchTriangle($$dpth: number, $$cr?: ErrorTracker): Nullable<Triangle> {
-        return this.run<Triangle>($$dpth,
-            () => {
-                let $scope$a: Nullable<PointID>;
-                let $scope$b: Nullable<PointID>;
-                let $scope$c: Nullable<PointID>;
-                let $$res: Nullable<Triangle> = null;
-                if (true
-                    && ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ($scope$c = this.matchPointID($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Triangle($scope$a, $scope$b, $scope$c);
-                }
-                return $$res;
-            });
+    public matchTriangle(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Triangle> {
+        return this.run<Triangle>($$dpth, () => {
+            let $scope$a: Nullable<PointID>;
+            let $scope$b: Nullable<PointID>;
+            let $scope$c: Nullable<PointID>;
+            let $$res: Nullable<Triangle> = null;
+            if (
+                true &&
+                ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ($scope$c = this.matchPointID($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Triangle($scope$a, $scope$b, $scope$c);
+            }
+            return $$res;
+        });
     }
-    public matchCircleOR($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOR> {
-        return this.run<CircleOR>($$dpth,
-            () => {
-                let $scope$o: Nullable<PointID>;
-                let $scope$r: Nullable<CircleOR_$0>;
-                let $$res: Nullable<CircleOR> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$o = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$r = this.matchCircleOR_$0($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new CircleOR($scope$o, $scope$r);
-                }
-                return $$res;
-            });
+    public matchCircleOR(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<CircleOR> {
+        return this.run<CircleOR>($$dpth, () => {
+            let $scope$o: Nullable<PointID>;
+            let $scope$r: Nullable<CircleOR_$0>;
+            let $$res: Nullable<CircleOR> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$o = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$r = this.matchCircleOR_$0($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new CircleOR($scope$o, $scope$r);
+            }
+            return $$res;
+        });
     }
-    public matchCircleOR_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOR_$0> {
+    public matchCircleOR_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<CircleOR_$0> {
         return this.choice<CircleOR_$0>([
             () => this.matchCircleOR_$0_1($$dpth + 1, $$cr),
             () => this.matchCircleOR_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchCircleOR_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOR_$0_1> {
+    public matchCircleOR_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<CircleOR_$0_1> {
         return this.matchCommonID($$dpth + 1, $$cr);
     }
-    public matchCircleOR_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOR_$0_2> {
+    public matchCircleOR_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<CircleOR_$0_2> {
         return this.matchRNumber($$dpth + 1, $$cr);
     }
-    public matchCircleOA($$dpth: number, $$cr?: ErrorTracker): Nullable<CircleOA> {
-        return this.run<CircleOA>($$dpth,
-            () => {
-                let $scope$o: Nullable<PointID>;
-                let $scope$a: Nullable<PointID>;
-                let $$res: Nullable<CircleOA> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$o = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new CircleOA($scope$o, $scope$a);
-                }
-                return $$res;
-            });
+    public matchCircleOA(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<CircleOA> {
+        return this.run<CircleOA>($$dpth, () => {
+            let $scope$o: Nullable<PointID>;
+            let $scope$a: Nullable<PointID>;
+            let $$res: Nullable<CircleOA> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$o = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:,)`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new CircleOA($scope$o, $scope$a);
+            }
+            return $$res;
+        });
     }
-    public matchCircle3P($$dpth: number, $$cr?: ErrorTracker): Nullable<Circle3P> {
-        return this.run<Circle3P>($$dpth,
-            () => {
-                let $scope$a: Nullable<PointID>;
-                let $scope$b: Nullable<PointID>;
-                let $scope$c: Nullable<PointID>;
-                let $$res: Nullable<Circle3P> = null;
-                if (true
-                    && this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$c = this.matchPointID($$dpth + 1, $$cr)) !== null
-                    && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new Circle3P($scope$a, $scope$b, $scope$c);
-                }
-                return $$res;
-            });
+    public matchCircle3P(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Circle3P> {
+        return this.run<Circle3P>($$dpth, () => {
+            let $scope$a: Nullable<PointID>;
+            let $scope$b: Nullable<PointID>;
+            let $scope$c: Nullable<PointID>;
+            let $$res: Nullable<Circle3P> = null;
+            if (
+                true &&
+                this.regexAccept(String.raw`(?:\()`, $$dpth + 1, $$cr) !==
+                    null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$a = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$b = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                ($scope$c = this.matchPointID($$dpth + 1, $$cr)) !== null &&
+                ((this.matchWS($$dpth + 1, $$cr)) || true) &&
+                this.regexAccept(String.raw`(?:\))`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new Circle3P($scope$a, $scope$b, $scope$c);
+            }
+            return $$res;
+        });
     }
-    public matchPointID($$dpth: number, $$cr?: ErrorTracker): Nullable<PointID> {
-        return this.run<PointID>($$dpth,
-            () => {
-                let $scope$name: Nullable<string>;
-                let $$res: Nullable<PointID> = null;
-                if (true
-                    && ($scope$name = this.regexAccept(String.raw`(?:[A-Z][a-z0-9\']*)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new PointID($scope$name);
-                }
-                return $$res;
-            });
+    public matchPointID(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<PointID> {
+        return this.run<PointID>($$dpth, () => {
+            let $scope$name: Nullable<string>;
+            let $$res: Nullable<PointID> = null;
+            if (
+                true &&
+                ($scope$name = this.regexAccept(
+                        String.raw`(?:[A-Z][a-z0-9\']*)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null
+            ) {
+                $$res = new PointID($scope$name);
+            }
+            return $$res;
+        });
     }
-    public matchCommonID($$dpth: number, $$cr?: ErrorTracker): Nullable<CommonID> {
-        return this.run<CommonID>($$dpth,
-            () => {
-                let $scope$name: Nullable<string>;
-                let $$res: Nullable<CommonID> = null;
-                if (true
-                    && ($scope$name = this.regexAccept(String.raw`(?:[a-z_][a-z0-9\']*)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new CommonID($scope$name);
-                }
-                return $$res;
-            });
+    public matchCommonID(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<CommonID> {
+        return this.run<CommonID>($$dpth, () => {
+            let $scope$name: Nullable<string>;
+            let $$res: Nullable<CommonID> = null;
+            if (
+                true &&
+                ($scope$name = this.regexAccept(
+                        String.raw`(?:[a-z_][a-z0-9\']*)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null
+            ) {
+                $$res = new CommonID($scope$name);
+            }
+            return $$res;
+        });
     }
     public matchNumber($$dpth: number, $$cr?: ErrorTracker): Nullable<Number> {
-        return this.run<Number>($$dpth,
-            () => {
-                let $scope$num: Nullable<Number_$0>;
-                let $$res: Nullable<Number> = null;
-                if (true
-                    && ($scope$num = this.matchNumber_$0($$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new Number($scope$num);
-                }
-                return $$res;
-            });
+        return this.run<Number>($$dpth, () => {
+            let $scope$num: Nullable<Number_$0>;
+            let $$res: Nullable<Number> = null;
+            if (
+                true &&
+                ($scope$num = this.matchNumber_$0($$dpth + 1, $$cr)) !== null
+            ) {
+                $$res = new Number($scope$num);
+            }
+            return $$res;
+        });
     }
-    public matchNumber_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Number_$0> {
+    public matchNumber_$0(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Number_$0> {
         return this.choice<Number_$0>([
             () => this.matchNumber_$0_1($$dpth + 1, $$cr),
             () => this.matchNumber_$0_2($$dpth + 1, $$cr),
         ]);
     }
-    public matchNumber_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Number_$0_1> {
+    public matchNumber_$0_1(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Number_$0_1> {
         return this.matchDegree($$dpth + 1, $$cr);
     }
-    public matchNumber_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Number_$0_2> {
+    public matchNumber_$0_2(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<Number_$0_2> {
         return this.matchRNumber($$dpth + 1, $$cr);
     }
-    public matchRNumber($$dpth: number, $$cr?: ErrorTracker): Nullable<RNumber> {
-        return this.run<RNumber>($$dpth,
-            () => {
-                let $scope$num: Nullable<string>;
-                let $$res: Nullable<RNumber> = null;
-                if (true
-                    && ($scope$num = this.regexAccept(String.raw`(?:-?\d+(\.\d+)?)`, $$dpth + 1, $$cr)) !== null
-                ) {
-                    $$res = new RNumber($scope$num);
-                }
-                return $$res;
-            });
+    public matchRNumber(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<RNumber> {
+        return this.run<RNumber>($$dpth, () => {
+            let $scope$num: Nullable<string>;
+            let $$res: Nullable<RNumber> = null;
+            if (
+                true &&
+                ($scope$num = this.regexAccept(
+                        String.raw`(?:-?\d+(\.\d+)?)`,
+                        $$dpth + 1,
+                        $$cr,
+                    )) !== null
+            ) {
+                $$res = new RNumber($scope$num);
+            }
+            return $$res;
+        });
     }
     public matchDegree($$dpth: number, $$cr?: ErrorTracker): Nullable<Degree> {
-        return this.run<Degree>($$dpth,
-            () => {
-                let $scope$num: Nullable<RNumber>;
-                let $$res: Nullable<Degree> = null;
-                if (true
-                    && ($scope$num = this.matchRNumber($$dpth + 1, $$cr)) !== null
-                    && this.regexAccept(String.raw`(?:deg)`, $$dpth + 1, $$cr) !== null
-                ) {
-                    $$res = new Degree($scope$num);
-                }
-                return $$res;
-            });
+        return this.run<Degree>($$dpth, () => {
+            let $scope$num: Nullable<RNumber>;
+            let $$res: Nullable<Degree> = null;
+            if (
+                true &&
+                ($scope$num = this.matchRNumber($$dpth + 1, $$cr)) !== null &&
+                this.regexAccept(String.raw`(?:deg)`, $$dpth + 1, $$cr) !== null
+            ) {
+                $$res = new Degree($scope$num);
+            }
+            return $$res;
+        });
     }
     public matchWS($$dpth: number, $$cr?: ErrorTracker): Nullable<WS> {
         return this.regexAccept(String.raw`(?:[ \t]+)`, $$dpth + 1, $$cr);
     }
-    public matchNewLine($$dpth: number, $$cr?: ErrorTracker): Nullable<NewLine> {
+    public matchNewLine(
+        $$dpth: number,
+        $$cr?: ErrorTracker,
+    ): Nullable<NewLine> {
         return this.regexAccept(String.raw`(?:[\n\r]+)`, $$dpth + 1, $$cr);
     }
     public test(): boolean {
@@ -1273,14 +1553,15 @@ export class Parser {
     public parse(): ParseResult {
         const mrk = this.mark();
         const res = this.matchFile(0);
-        if (res)
-            return {ast: res, errs: []};
+        if (res) {
+            return { ast: res, errs: [] };
+        }
         this.reset(mrk);
         const rec = new ErrorTracker();
         this.clearMemos();
         this.matchFile(0, rec);
-        const err = rec.getErr()
-        return {ast: res, errs: err !== null ? [err] : []}
+        const err = rec.getErr();
+        return { ast: res, errs: err !== null ? [err] : [] };
     }
     public mark(): PosInfo {
         return this.pos;
@@ -1303,9 +1584,10 @@ export class Parser {
     }
     private run<T>($$dpth: number, fn: $$RuleType<T>): Nullable<T> {
         const mrk = this.mark();
-        const res = fn()
-        if (res !== null)
+        const res = fn();
+        if (res !== null) {
             return res;
+        }
         this.reset(mrk);
         return null;
     }
@@ -1318,24 +1600,27 @@ export class Parser {
         }
         return null;
     }
-    private regexAccept(match: string, dpth: number, cr?: ErrorTracker): Nullable<string> {
-        return this.run<string>(dpth,
-            () => {
-                const reg = new RegExp(match, "y");
-                const mrk = this.mark();
-                reg.lastIndex = mrk.overallPos;
-                const res = this.tryConsume(reg);
-                if(cr) {
-                    cr.record(mrk, res, {
-                        kind: "RegexMatch",
-                        // We substring from 3 to len - 1 to strip off the
-                        // non-capture group syntax added as a WebKit workaround
-                        literal: match.substring(3, match.length - 1),
-                        negated: this.negating,
-                    });
-                }
-                return res;
-            });
+    private regexAccept(
+        match: string,
+        dpth: number,
+        cr?: ErrorTracker,
+    ): Nullable<string> {
+        return this.run<string>(dpth, () => {
+            const reg = new RegExp(match, "y");
+            const mrk = this.mark();
+            reg.lastIndex = mrk.overallPos;
+            const res = this.tryConsume(reg);
+            if (cr) {
+                cr.record(mrk, res, {
+                    kind: "RegexMatch",
+                    // We substring from 3 to len - 1 to strip off the
+                    // non-capture group syntax added as a WebKit workaround
+                    literal: match.substring(3, match.length - 1),
+                    negated: this.negating,
+                });
+            }
+            return res;
+        });
     }
     private tryConsume(reg: RegExp): Nullable<string> {
         const res = reg.exec(this.input);
@@ -1351,7 +1636,9 @@ export class Parser {
             this.pos = {
                 overallPos: reg.lastIndex,
                 line: this.pos.line + lineJmp,
-                offset: lind === -1 ? this.pos.offset + res[0].length : (res[0].length - lind - 1)
+                offset: lind === -1
+                    ? this.pos.offset + res[0].length
+                    : (res[0].length - lind - 1),
             };
             return res[0];
         }
@@ -1372,22 +1659,32 @@ export class Parser {
         this.reset(mrk);
         return res === null ? true : null;
     }
-    private memoise<K>(rule: $$RuleType<K>, memo: Map<number, [Nullable<K>, PosInfo]>): Nullable<K> {
+    private memoise<K>(
+        rule: $$RuleType<K>,
+        memo: Map<number, [Nullable<K>, PosInfo]>,
+    ): Nullable<K> {
         const $scope$pos = this.mark();
         const $scope$memoRes = memo.get($scope$pos.overallPos);
-        if(this.memoSafe && $scope$memoRes !== undefined) {
-        this.reset($scope$memoRes[1]);
-        return $scope$memoRes[0];
+        if (this.memoSafe && $scope$memoRes !== undefined) {
+            this.reset($scope$memoRes[1]);
+            return $scope$memoRes[0];
         }
         const $scope$result = rule();
-        if(this.memoSafe)
-        memo.set($scope$pos.overallPos, [$scope$result, this.mark()]);
+        if (this.memoSafe) {
+            memo.set($scope$pos.overallPos, [$scope$result, this.mark()]);
+        }
         return $scope$result;
     }
-    private match$EOF(et?: ErrorTracker): Nullable<{kind: ASTKinds.$EOF}> {
-        const res: {kind: ASTKinds.$EOF} | null = this.finished() ? { kind: ASTKinds.$EOF } : null;
-        if(et)
-            et.record(this.mark(), res, { kind: "EOF", negated: this.negating });
+    private match$EOF(et?: ErrorTracker): Nullable<{ kind: ASTKinds.$EOF }> {
+        const res: { kind: ASTKinds.$EOF } | null = this.finished()
+            ? { kind: ASTKinds.$EOF }
+            : null;
+        if (et) {
+            et.record(this.mark(), res, {
+                kind: "EOF",
+                negated: this.negating,
+            });
+        }
         return res;
     }
 }
@@ -1419,25 +1716,33 @@ export class SyntaxErr {
         this.expmatches = [...expmatches];
     }
     public toString(): string {
-        return `Syntax Error at line ${this.pos.line}:${this.pos.offset}. Expected one of ${this.expmatches.map(x => x.kind === "EOF" ? " EOF" : ` ${x.negated ? 'not ': ''}'${x.literal}'`)}`;
+        return `Syntax Error at line ${this.pos.line}:${this.pos.offset}. Expected one of ${
+            this.expmatches.map((x) =>
+                x.kind === "EOF"
+                    ? " EOF"
+                    : ` ${x.negated ? "not " : ""}'${x.literal}'`
+            )
+        }`;
     }
 }
 class ErrorTracker {
-    private mxpos: PosInfo = {overallPos: -1, line: -1, offset: -1};
+    private mxpos: PosInfo = { overallPos: -1, line: -1, offset: -1 };
     private regexset: Set<string> = new Set();
     private pmatches: MatchAttempt[] = [];
     public record(pos: PosInfo, result: any, att: MatchAttempt) {
-        if ((result === null) === att.negated)
+        if ((result === null) === att.negated) {
             return;
+        }
         if (pos.overallPos > this.mxpos.overallPos) {
             this.mxpos = pos;
             this.pmatches = [];
-            this.regexset.clear()
+            this.regexset.clear();
         }
         if (this.mxpos.overallPos === pos.overallPos) {
-            if(att.kind === "RegexMatch") {
-                if(!this.regexset.has(att.literal))
+            if (att.kind === "RegexMatch") {
+                if (!this.regexset.has(att.literal)) {
                     this.pmatches.push(att);
+                }
                 this.regexset.add(att.literal);
             } else {
                 this.pmatches.push(att);
@@ -1445,8 +1750,9 @@ class ErrorTracker {
         }
     }
     public getErr(): SyntaxErr | null {
-        if (this.mxpos.overallPos !== -1)
+        if (this.mxpos.overallPos !== -1) {
             return new SyntaxErr(this.mxpos, this.pmatches);
+        }
         return null;
     }
 }
