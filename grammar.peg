@@ -6,7 +6,7 @@ import * as ast from "./ast.ts";
 
 File := NewLine? head=FileLine tail=FileLineTail* NewLine? $
     .lines = ast.AstFileLine[] { return [head.val].concat(tail.map((arg, _) => arg.val)); }
-FileLine := WS? ln={Draw | Decl | ConfigLine} WS? .val = ast.AstFileLine { return ln.val; }
+FileLine := WS? ln={Draw | Decl | ConfigLine | SaveFile} WS? .val = ast.AstFileLine { return ln.val; }
 FileLineTail := NewLine ln=FileLine .val = ast.AstFileLine { return ln.val; }
 
 Decl := l=DeclLeft WS? '=' WS? r={Expr | Coord}
@@ -61,11 +61,14 @@ ConfigLine := 'config' WS head=Config tail=ConfigTail*
     }; }
 Config := conf='[A-Za-z_]+' WS? '=' WS? value='[A-Za-z0-9-_]*'
     .val = ast.AstConfig {
-        if (value.endsWith("deg")) value = parseFloat(value) * Math.PI / 180;
+        if (value.endsWith("deg")) value = (parseFloat(value) * Math.PI / 180).toString();
         return { conf, value }
     }
 ConfigTail := WS? ',' WS? step=Config
     .val = ast.AstConfig { return step.val; }
+
+SaveFile := 'save' WS path='[^\n\r]+'
+    .val = ast.AstSaveFile { return { kind: "save", path }; }
 
 Line2P := a=PointID b=PointID
     .val = ast.AstLine2P { return { kind: "line2p", a: a.val, b: b.val } }

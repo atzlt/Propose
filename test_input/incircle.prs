@@ -1,4 +1,4 @@
-config width=250, height=200
+config width=280, height=200
 
 A = (-3, -2)
 B = (3, -2)

@@ -82,7 +82,12 @@ export type AstConfigLine = {
     confs: AstConfig[];
 };
 
-export type AstFileLine = AstDecl | AstDraw | AstConfigLine;
+export type AstSaveFile = {
+    kind: "save",
+    path: string,
+}
+
+export type AstFileLine = AstDecl | AstDraw | AstConfigLine | AstSaveFile;
 
 // deno-lint-ignore no-explicit-any
 export function isDestruct(x: any): x is AstDestruct {
@@ -127,6 +132,11 @@ export function isDraw(x: any): x is AstDraw {
 // deno-lint-ignore no-explicit-any
 export function isConf(x: any): x is AstConfigLine {
     return x.kind == "config";
+}
+
+// deno-lint-ignore no-explicit-any
+export function isSaveFile(x: any): x is AstSaveFile {
+    return x.kind == "save";
 }
 
 // deno-lint-ignore no-explicit-any

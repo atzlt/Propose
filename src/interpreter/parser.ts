@@ -16,6 +16,7 @@ export enum ASTKinds {
     FileLine_$0_1,
     FileLine_$0_2,
     FileLine_$0_3,
+    FileLine_$0_4,
     FileLineTail,
     Decl,
     Decl_$0_1,
@@ -61,6 +62,7 @@ export enum ASTKinds {
     ConfigLine,
     Config,
     ConfigTail,
+    SaveFile,
     Line2P,
     Triangle,
     CircleOR,
@@ -103,10 +105,11 @@ export class FileLine {
         })();
     }
 }
-export type FileLine_$0 = FileLine_$0_1 | FileLine_$0_2 | FileLine_$0_3;
+export type FileLine_$0 = FileLine_$0_1 | FileLine_$0_2 | FileLine_$0_3 | FileLine_$0_4;
 export type FileLine_$0_1 = Draw;
 export type FileLine_$0_2 = Decl;
 export type FileLine_$0_3 = ConfigLine;
+export type FileLine_$0_4 = SaveFile;
 export class FileLineTail {
     public kind: ASTKinds.FileLineTail = ASTKinds.FileLineTail;
     public ln: FileLine;
@@ -372,7 +375,7 @@ export class Config {
         this.conf = conf;
         this.value = value;
         this.val = ((): ast.AstConfig => {
-        if (value.endsWith("deg")) value = parseFloat(value) * Math.PI / 180;
+        if (value.endsWith("deg")) value = (parseFloat(value) * Math.PI / 180).toString();
         return { conf, value }
         })();
     }
@@ -385,6 +388,17 @@ export class ConfigTail {
         this.step = step;
         this.val = ((): ast.AstConfig => {
         return step.val;
+        })();
+    }
+}
+export class SaveFile {
+    public kind: ASTKinds.SaveFile = ASTKinds.SaveFile;
+    public path: string;
+    public val: ast.AstSaveFile;
+    constructor(path: string){
+        this.path = path;
+        this.val = ((): ast.AstSaveFile => {
+        return { kind: "save", path };
         })();
     }
 }
@@ -575,6 +589,7 @@ export class Parser {
             () => this.matchFileLine_$0_1($$dpth + 1, $$cr),
             () => this.matchFileLine_$0_2($$dpth + 1, $$cr),
             () => this.matchFileLine_$0_3($$dpth + 1, $$cr),
+            () => this.matchFileLine_$0_4($$dpth + 1, $$cr),
         ]);
     }
     public matchFileLine_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_1> {
@@ -585,6 +600,9 @@ export class Parser {
     }
     public matchFileLine_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_3> {
         return this.matchConfigLine($$dpth + 1, $$cr);
+    }
+    public matchFileLine_$0_4($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLine_$0_4> {
+        return this.matchSaveFile($$dpth + 1, $$cr);
     }
     public matchFileLineTail($$dpth: number, $$cr?: ErrorTracker): Nullable<FileLineTail> {
         return this.run<FileLineTail>($$dpth,
@@ -1031,6 +1049,21 @@ export class Parser {
                     && ($scope$step = this.matchConfig($$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new ConfigTail($scope$step);
+                }
+                return $$res;
+            });
+    }
+    public matchSaveFile($$dpth: number, $$cr?: ErrorTracker): Nullable<SaveFile> {
+        return this.run<SaveFile>($$dpth,
+            () => {
+                let $scope$path: Nullable<string>;
+                let $$res: Nullable<SaveFile> = null;
+                if (true
+                    && this.regexAccept(String.raw`(?:save)`, $$dpth + 1, $$cr) !== null
+                    && this.matchWS($$dpth + 1, $$cr) !== null
+                    && ($scope$path = this.regexAccept(String.raw`(?:[^\n\r]+)`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new SaveFile($scope$path);
                 }
                 return $$res;
             });

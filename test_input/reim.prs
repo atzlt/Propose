@@ -13,7 +13,7 @@ P, _ = i k, c, B
 Q, _ = i k, d, B
 
 draw c, d, A, B, S, T, ST, P, Q, PQ
+save test_input\reim-intermediate.svg
 
 config color=red
-
 draw SP, TQ

@@ -1,5 +1,5 @@
 import { metric as m } from "../deps.ts";
-import { AstArg, AstExpr, isCircle3P, isCircleOA, isCircleOR, isConf, isCoord, isDecl, isDestruct, isDraw, isLine2P, isTrig } from "./ast.ts";
+import { AstArg, AstExpr, isCircle3P, isCircleOA, isCircleOR, isConf, isCoord, isDecl, isDestruct, isDraw, isLine2P, isSaveFile, isTrig } from "./ast.ts";
 import { drawCircle, drawDot, drawPointLabel, drawSegment } from "./draw.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
@@ -15,7 +15,7 @@ function evalArg(arg: AstArg, objs: ObjectsRecord) {
     } else if (isLine2P(arg)) {
         return m.line(<m.Point>objs[arg.a], <m.Point>objs[arg.b]);
     } else if (isTrig(arg)) {
-        return [<m.Point>objs[arg.a], <m.Point>objs[arg.b], <m.Point>objs[arg.c]]
+        return [<m.Point>objs[arg.a], <m.Point>objs[arg.b], <m.Point>objs[arg.c]];
     } else if (isCircleOR(arg)) {
         if (typeof arg.radius == "number") {
             return m.circle(<m.Point>objs[arg.center], arg.radius);
@@ -104,7 +104,7 @@ export default function interpret(str: string, options: InterpreterOption) {
                 for (const conf of drawStep.conf) {
                     tempConf[conf.conf] = conf.value;
                 }
-                tempConf = {...config, ...tempConf};
+                tempConf = { ...config, ...tempConf };
 
                 if (typeof step == "string") {
                     const obj = objs[step];
@@ -127,6 +127,12 @@ export default function interpret(str: string, options: InterpreterOption) {
             for (const conf of line.confs) {
                 config[conf.conf] = conf.value;
             }
+        } else if (isSaveFile(line)) {
+            console.log("Save to file");
+            Deno.writeFileSync(
+                line.path,
+                (new TextEncoder()).encode(wrapSVG(lineSvg + dotsSvg + textSvg, config))
+            );
         }
     }
     return wrapSVG(lineSvg + dotsSvg + textSvg, config);
