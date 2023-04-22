@@ -149,11 +149,9 @@ export default class Interpreter {
                 }
             }
         } else if (isLine2P(step)) {
-            this.svg.line += drawSegment(
-                <m.Point> this.objs[step.a],
-                <m.Point> this.objs[step.b],
-                tempConf,
-            );
+            const x = <m.Point> this.objs[step.a];
+            const y = <m.Point> this.objs[step.b];
+            this.svg.line += drawSegment(x, y, tempConf);
         } else if (
             isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
         ) {

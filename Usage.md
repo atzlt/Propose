@@ -50,6 +50,8 @@ If you want to discard one of the value, use an underscore:
 _, T = # AB, (O, r)
 ```
 
+Every identifier can be re-assigned, but re-assigning one identifier _does not_ update the objects depending on it.
+
 ### Arguments
 
 There are many types of arguments:
@@ -86,7 +88,7 @@ draw A, B, c[label=c,loc=40deg], PQ[color=blue], ...
 
 Draw some objects. **Currently does not support drawing (infinite) lines.**
 
-You can inline some temporary configurations in square brackets `[]`. The configurations only work for the current object. For all configurations see the previous section. There's only one additional configuration: `label`, which is the text to be labelled on this object, and **only works for points currently**.
+You can inline some temporary configurations in square brackets `[]`. The configurations only work for the current object. For all configurations see the previous section. There's only one additional configuration: `label`, which is the text to be labelled on this object. **Labelling currently only works for points and circles.**
 
 The unit length is 1 centimeter. The y-axis of SVG coordinate system is flipped, so a point `(a, b)` is actually rendered as `x="a cm", y="-b cm"` in the output.
 
@@ -126,9 +128,11 @@ draw AB, BC, CD, DA, T, AT, CT, BT, S, CS [color=blue], BS, DS
 
 CLI is currently very simple. You specify input by flag `-i` and output by `-o` (if not present and the input file name ends in `.prs`, the output file is calculated by replacing every `.prs` with `.svg`). For example, `propose -i test_input/incenter.prs` saves the output to `test_input/incenter.svg`.
 
+If `-i` is not present, you enter **REPL mode**. Here you insert codes line by line, and save to a file any time you like using `save` instruction. Type `exit` or press `Ctrl+C` to exit. Any error produced will _not_ stop the REPL.
+
 # Appendix: List of Methods
 
-- `#`, `i` intersection. For intersections with circles, this method requires **destruct declaration**. If a third argument is given, then this should be one of the common points, then the another intersection will be placed at the first return value.
+- `#`, `i` intersection. For intersections with circles, this method requires **destruct declaration**. If a third argument is given, this should be one of the common points, and the another intersection will be placed at the first return value.
 - `|-`, `perp` perpendicular. `perp <point>, <line>`
 - `//`, `par` parallel. `par <point>, <line>`
 - `!`, `proj` projection. `proj <point>, <line>`
