@@ -6,10 +6,12 @@ export function drawSegment(
     conf: {
         color?: string,
         linewidth?: number,
+        dash?: string,
     },
 ) {
+    const dash = conf.dash ? ` stroke-dasharray="${conf.dash}"` : "";
     return `<line x1="${A[0]}cm" y1="${-A[1]}cm" x2="${B[0]}cm" y2="${-B[1]
-        }cm" stroke="${conf.color}" stroke-width="${conf.linewidth}"/>`;
+        }cm" stroke="${conf.color}" stroke-width="${conf.linewidth}"${dash}/>`;
 }
 
 export function drawCircle(
@@ -18,13 +20,15 @@ export function drawCircle(
         fill?: string,
         color?: string,
         linewidth?: number,
+        dash?: string,
     },
 ) {
+    const dash = conf.dash ? ` stroke-dasharray="${conf.dash}"` : "";
     return `<circle cx="${c[0][0]}cm" cy="${-c[0][1]}cm" r="${c[1]
         }cm" stroke="${conf.color
         }" fill="${conf.fill
         }" stroke-width="${conf.linewidth
-        }"/>`;
+        }"${dash}/>`;
 }
 
 export function drawDot(
@@ -37,7 +41,7 @@ export function drawDot(
     return `<circle cx="${P[0]}cm" cy="${-P[1]}cm" r="${conf.dotsize}" fill="${conf.color}"/>`;
 }
 
-export function drawPointLabel(
+export function drawLabel(
     P: m.Point,
     conf: {
         label?: string,

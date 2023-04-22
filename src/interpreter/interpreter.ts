@@ -1,6 +1,7 @@
+import { onCircle } from "https://deno.land/x/metric@v1.1.0/src/calc/point_on.ts";
 import { metric as m } from "../deps.ts";
 import { AstArg, AstExpr, isCircle3P, isCircleOA, isCircleOR, isConf, isCoord, isDecl, isDestruct, isDraw, isLine2P, isSaveFile, isTrig } from "./ast.ts";
-import { drawCircle, drawDot, drawPointLabel, drawSegment } from "./draw.ts";
+import { drawCircle, drawDot, drawLabel, drawSegment } from "./draw.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
 
@@ -112,10 +113,16 @@ export default function interpret(str: string, options: InterpreterOption) {
                     if (m.isPoint(obj)) {
                         dotsSvg += drawDot(obj, tempConf);
                         if (tempConf.label != undefined) {
-                            textSvg += drawPointLabel(obj, tempConf);
+                            textSvg += drawLabel(obj, tempConf);
                         }
                     } else if (m.isCircle(obj)) {
                         lineSvg += drawCircle(obj, tempConf);
+                        if (tempConf.label != undefined) {
+                            textSvg += drawLabel(
+                                onCircle(obj, parseFloat(tempConf.loc)),
+                                tempConf
+                            );
+                        }
                     }
                 } else if (isLine2P(step)) {
                     lineSvg += drawSegment(<m.Point>objs[step.a], <m.Point>objs[step.b], tempConf);

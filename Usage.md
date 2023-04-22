@@ -75,7 +75,8 @@ The value can be a string, a number or a number with `deg` suffix.
 1. `width, height` The width and height of the output image. Default: both `300`.
 2. `minX, minY` The `minX` and `minY` of the `viewBox`. Default: if not set then `minX = -width / 2`, `minY = -height / 2`.
 3. `color, fill, linewidth, dotsize` Very straightfoward. Default: `#000000`, `#00000000`, `1.5`, `2.5`.
-4. `loc, dist` The default location (angle) and distance for labels Default: `0`, `0.3` (**in centimeters**).
+4. `dash` Dash line style, set [the `stroke-dasharray` attribute](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray). Default: `undefined`.
+5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `0.3` (**in centimeters**).
 
 ## Drawing
 
