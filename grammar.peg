@@ -24,7 +24,7 @@ Expr := meth=Method WS head=Arg tail=ArgTail* WS?
             args: [head.val].concat(tail.map((arg, _) => arg.val)),
         }
     }
-Method := name='[A-Za-z0-9\'!@#%^*]+' .val = string { return name; }
+Method := name='[^\n\r \t]+' .val = string { return name; }
 Arg := arg={Triangle | Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID | Number}
     .val = ast.AstArg { return arg.val; }
 ArgTail := WS? ',' WS? arg=Arg
