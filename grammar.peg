@@ -59,7 +59,7 @@ ConfigLine := 'config' WS head=Config tail=ConfigTail*
         kind: "config",
         confs: [head.val].concat(tail.map((arg, _) => arg.val)),
     }; }
-Config := conf='[A-Za-z_]+' WS? '=' WS? value='[A-Za-z0-9-_]*'
+Config := conf='[A-Za-z_]+' WS? '=' WS? value='[^\]\)\n\r,]*'
     .val = ast.AstConfig {
         if (value.endsWith("deg")) value = (parseFloat(value) * Math.PI / 180).toString();
         return { conf, value }

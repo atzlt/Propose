@@ -6,5 +6,5 @@ C = (1, 2)
 I = cI ABC
 r = d I, AB
 
-draw A[label=A,labelloc=200deg], B[label=B,labelloc=-20deg], C[label=C,labelloc=90deg]
+draw A[label=A,loc=200deg], B[label=B,loc=-20deg], C[label=C,loc=90deg]
 draw AB, BC, CA, I[label=I], (I, r)[color=blue]

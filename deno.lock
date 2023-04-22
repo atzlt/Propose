@@ -21,7 +21,16 @@
     "https://deno.land/x/metric@v1.0.0/src/calc/transform.ts": "85d489425ff3cb3ebe7fa75682b3fec2532fbe94db08395522358a7fe1c387cb",
     "https://deno.land/x/metric@v1.0.0/src/errors.ts": "2265c00d382b09729e4719a1597833b55115ef4b56f92587f85008a18fc2fb86",
     "https://deno.land/x/metric@v1.0.0/src/index.ts": "bfb21eab9d62b6dbf6f9366a34347fa0729fb805a389635568774112cf33afc5",
-    "https://deno.land/x/metric@v1.0.0/src/objects.ts": "c1e1db93214fa156143f01c0c6b3786d54d1cab230b1265f57b2c46699b33bca"
+    "https://deno.land/x/metric@v1.0.0/src/objects.ts": "c1e1db93214fa156143f01c0c6b3786d54d1cab230b1265f57b2c46699b33bca",
+    "https://deno.land/x/metric@v1.1.0/src/calc/advanced/triangle/basic.ts": "93634453f3336872825ac7113a84833222f1da98e91fe6c5d9903fabca5afdb0",
+    "https://deno.land/x/metric@v1.1.0/src/calc/advanced/triangle/center.ts": "c000858614141f216d499cb5dd4743006ba492784c5c69900bff986ad77de6ab",
+    "https://deno.land/x/metric@v1.1.0/src/calc/basic.ts": "80f9fa1f71b59ba5e73d40a06ef77d24e6a34681087669677f63b2ec337ff7ee",
+    "https://deno.land/x/metric@v1.1.0/src/calc/mod.ts": "21e7157ee4dfe49181cb5c1627d79f34190e70b1ca313232879a9fe8059e7b3e",
+    "https://deno.land/x/metric@v1.1.0/src/calc/point_on.ts": "c15b62d9828b5e484ab13c0412661c9796bad68dafe280c487e12e3d1cebe357",
+    "https://deno.land/x/metric@v1.1.0/src/calc/transform.ts": "df138b8503c8c832eee5fe8054ade9581f78006d818f8faba0385c590900c506",
+    "https://deno.land/x/metric@v1.1.0/src/errors.ts": "454a4eb848c1f0628694436dff68c48550496cc98a2a4a41f8da6926b01e907f",
+    "https://deno.land/x/metric@v1.1.0/src/index.ts": "bfb21eab9d62b6dbf6f9366a34347fa0729fb805a389635568774112cf33afc5",
+    "https://deno.land/x/metric@v1.1.0/src/objects.ts": "c1e1db93214fa156143f01c0c6b3786d54d1cab230b1265f57b2c46699b33bca"
   },
   "npm": {
     "specifiers": {

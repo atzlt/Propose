@@ -64,8 +64,8 @@ export default function interpret(str: string, options: InterpreterOption) {
         fill: "#00000000",
         linewidth: 1.5,
         dotsize: 2.5,
-        labelloc: 0,
-        labeldist: 0.3,
+        loc: 0,
+        dist: 0.3,
         labelsize: 15,
     }, options);
     // Split into lines and dots, because dots are always on top of lines
@@ -140,5 +140,7 @@ export default function interpret(str: string, options: InterpreterOption) {
 
 // deno-lint-ignore no-explicit-any
 function wrapSVG(svg: string, config: Record<string, any>) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="${-parseFloat(config.width) / 2} ${-parseFloat(config.height) / 2} ${config.width} ${config.height}">${svg}</svg>`;
+    const minX = config.minX ? config.minX : -parseFloat(config.width) / 2;
+    const minY = config.minY ? config.minY : -parseFloat(config.height) / 2;
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${config.width}" height="${config.height}" viewBox="${minX} ${minY} ${config.width} ${config.height}">${svg}</svg>`;
 }

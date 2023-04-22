@@ -42,12 +42,12 @@ export function drawPointLabel(
     conf: {
         label?: string,
         labelsize?: string,
-        labelloc?: string,
-        labeldist?: string,
+        loc?: string,
+        dist?: string,
     }
 ) {
-    const loc = parseFloat(conf.labelloc!);
-    const dist = parseFloat(conf.labeldist!);
+    const loc = parseFloat(conf.loc!);
+    const dist = parseFloat(conf.dist!);
     const x = P[0] + dist * Math.cos(loc);
     const y = P[1] + dist * Math.sin(loc);
     return `<text font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="middle" x="${x}cm" y="${-y}cm">${conf.label}</text>`

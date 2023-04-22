@@ -2,6 +2,8 @@
 
 Propose is a tool to generate geometric figures (SVG format) from text files.
 
+For a usage guide see [Usage](./Usage.md).
+
 ## Examples
 
 ### Incircle

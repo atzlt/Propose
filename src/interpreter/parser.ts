@@ -1030,7 +1030,7 @@ export class Parser {
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$value = this.regexAccept(String.raw`(?:[A-Za-z0-9-_]*)`, $$dpth + 1, $$cr)) !== null
+                    && ($scope$value = this.regexAccept(String.raw`(?:[^\]\)\n\r,]*)`, $$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new Config($scope$conf, $scope$value);
                 }

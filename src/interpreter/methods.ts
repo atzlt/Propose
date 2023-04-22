@@ -14,12 +14,20 @@ export const METHODS: Record<string, Function> = {
     perpBsct: m.perpBisect,
     "<-": m.angleBisect,
     angBsct: m.angleBisect,
+    tan: m.tangent,
     mid: m.midpoint,
     "@": m.circle,
     l: m.line,
     d: m.distance,
-    onCirc: m.calc.default.point_on.onCircle,
-    onSeg: m.calc.default.point_on.onSegment,
+
+    refl: m.refl,
+    inv: m.calc.transform.invert,
+    rot: m.calc.transform.rotate,
+    scale: m.calc.transform.scale,
+
+    onCirc: m.calc.point_on.onCircle,
+    onSeg: (x: m.Point, y: m.Point, z: number) => m.calc.point_on.onSegment([x, y], z),
+
     cO: m.centers.circumcenter,
     cCirc: m.centers.circumcenter,
     cI: m.centers.incenter,
