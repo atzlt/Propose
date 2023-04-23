@@ -120,8 +120,7 @@ l, _ = tan B, c
 k, _ = tan D, c
 S = # l, k
 
-draw c, A[label=A,loc=-60deg], B[label=B,loc=50deg], C[label=C,loc=220deg,dist=0.4], D[label=D,loc=-65deg,dist=0.4]
-draw AB, BC, CD, DA, T, AT, CT, BT, S, CS [color=blue], BS, DS
+draw c, A[label=A,loc=-60deg], B[label=B,loc=50deg], C[label=C,loc=220deg,dist=0.4], D[label=D,loc=-65deg,dist=0.4], AB, BC, CD, DA, T, AT, CT, BT, S, CS [color=blue], BS, DS
 ```
 
 # Using the CLI
@@ -131,6 +130,8 @@ CLI is currently very simple. You specify input by flag `-i` and output by `-o` 
 If `-i` is not present, you enter **REPL mode**. Here you insert codes line by line, and save to a file any time you like using `save` instruction. Type `exit` or press `Ctrl+C` to exit. Any error produced will _not_ stop the REPL.
 
 # Appendix: List of Methods
+
+Methods marked with **destruct** requires destruct declaration.
 
 - `#`, `i` intersection. For intersections with circles, this method requires **destruct declaration**. If a third argument is given, this should be one of the common points, and the another intersection will be placed at the first return value.
 - `|-`, `perp` perpendicular. `perp <point>, <line>`

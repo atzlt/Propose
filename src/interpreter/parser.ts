@@ -21,6 +21,7 @@ export enum ASTKinds {
     Decl,
     Decl_$0_1,
     Decl_$0_2,
+    Decl_$0_3,
     DeclLeft,
     DeclLeft_$0_1,
     DeclLeft_$0_2,
@@ -43,6 +44,7 @@ export enum ASTKinds {
     Arg_$0_6,
     Arg_$0_7,
     Arg_$0_8,
+    Arg_$0_9,
     ArgTail,
     Coord,
     Coord_$0_1,
@@ -63,6 +65,7 @@ export enum ASTKinds {
     Config,
     ConfigTail,
     SaveFile,
+    Eval,
     Line2P,
     Triangle,
     CircleOR,
@@ -134,9 +137,10 @@ export class Decl {
         })();
     }
 }
-export type Decl_$0 = Decl_$0_1 | Decl_$0_2;
-export type Decl_$0_1 = Expr;
-export type Decl_$0_2 = Coord;
+export type Decl_$0 = Decl_$0_1 | Decl_$0_2 | Decl_$0_3;
+export type Decl_$0_1 = Coord;
+export type Decl_$0_2 = Expr;
+export type Decl_$0_3 = Eval;
 export class DeclLeft {
     public kind: ASTKinds.DeclLeft = ASTKinds.DeclLeft;
     public tar: DeclLeft_$0;
@@ -224,7 +228,7 @@ export class Arg {
         })();
     }
 }
-export type Arg_$0 = Arg_$0_1 | Arg_$0_2 | Arg_$0_3 | Arg_$0_4 | Arg_$0_5 | Arg_$0_6 | Arg_$0_7 | Arg_$0_8;
+export type Arg_$0 = Arg_$0_1 | Arg_$0_2 | Arg_$0_3 | Arg_$0_4 | Arg_$0_5 | Arg_$0_6 | Arg_$0_7 | Arg_$0_8 | Arg_$0_9;
 export type Arg_$0_1 = Triangle;
 export type Arg_$0_2 = Line2P;
 export type Arg_$0_3 = Circle3P;
@@ -233,6 +237,7 @@ export type Arg_$0_5 = CircleOA;
 export type Arg_$0_6 = PointID;
 export type Arg_$0_7 = CommonID;
 export type Arg_$0_8 = Number;
+export type Arg_$0_9 = Eval;
 export class ArgTail {
     public kind: ASTKinds.ArgTail = ASTKinds.ArgTail;
     public arg: Arg;
@@ -267,7 +272,7 @@ export class RightCoord {
         this.x = x;
         this.y = y;
         this.val = ((): ast.AstCoord => {
-        return { x: x.val, y: y.val };
+        return { kind: "coord", x: x.val, y: y.val };
         })();
     }
 }
@@ -281,6 +286,7 @@ export class PolarCoord {
         this.a = a;
         this.val = ((): ast.AstCoord => {
         return {
+        kind: "coord",
         x: r.val * Math.cos(a.val),
         y: r.val * Math.sin(a.val)
     };
@@ -399,6 +405,17 @@ export class SaveFile {
         this.path = path;
         this.val = ((): ast.AstSaveFile => {
         return { kind: "save", path };
+        })();
+    }
+}
+export class Eval {
+    public kind: ASTKinds.Eval = ASTKinds.Eval;
+    public str: string;
+    public val: ast.AstEval;
+    constructor(str: string){
+        this.str = str;
+        this.val = ((): ast.AstEval => {
+        return { kind: "eval", str };
         })();
     }
 }
@@ -640,13 +657,17 @@ export class Parser {
         return this.choice<Decl_$0>([
             () => this.matchDecl_$0_1($$dpth + 1, $$cr),
             () => this.matchDecl_$0_2($$dpth + 1, $$cr),
+            () => this.matchDecl_$0_3($$dpth + 1, $$cr),
         ]);
     }
     public matchDecl_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl_$0_1> {
-        return this.matchExpr($$dpth + 1, $$cr);
+        return this.matchCoord($$dpth + 1, $$cr);
     }
     public matchDecl_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl_$0_2> {
-        return this.matchCoord($$dpth + 1, $$cr);
+        return this.matchExpr($$dpth + 1, $$cr);
+    }
+    public matchDecl_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<Decl_$0_3> {
+        return this.matchEval($$dpth + 1, $$cr);
     }
     public matchDeclLeft($$dpth: number, $$cr?: ErrorTracker): Nullable<DeclLeft> {
         return this.run<DeclLeft>($$dpth,
@@ -765,7 +786,7 @@ export class Parser {
                 let $scope$name: Nullable<string>;
                 let $$res: Nullable<Method> = null;
                 if (true
-                    && ($scope$name = this.regexAccept(String.raw`(?:[^\n\r \t]+)`, $$dpth + 1, $$cr)) !== null
+                    && ($scope$name = this.regexAccept(String.raw`(?:[^\n\r \t\$]+)`, $$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new Method($scope$name);
                 }
@@ -795,6 +816,7 @@ export class Parser {
             () => this.matchArg_$0_6($$dpth + 1, $$cr),
             () => this.matchArg_$0_7($$dpth + 1, $$cr),
             () => this.matchArg_$0_8($$dpth + 1, $$cr),
+            () => this.matchArg_$0_9($$dpth + 1, $$cr),
         ]);
     }
     public matchArg_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_1> {
@@ -820,6 +842,9 @@ export class Parser {
     }
     public matchArg_$0_8($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_8> {
         return this.matchNumber($$dpth + 1, $$cr);
+    }
+    public matchArg_$0_9($$dpth: number, $$cr?: ErrorTracker): Nullable<Arg_$0_9> {
+        return this.matchEval($$dpth + 1, $$cr);
     }
     public matchArgTail($$dpth: number, $$cr?: ErrorTracker): Nullable<ArgTail> {
         return this.run<ArgTail>($$dpth,
@@ -1064,6 +1089,21 @@ export class Parser {
                     && ($scope$path = this.regexAccept(String.raw`(?:[^\n\r]+)`, $$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new SaveFile($scope$path);
+                }
+                return $$res;
+            });
+    }
+    public matchEval($$dpth: number, $$cr?: ErrorTracker): Nullable<Eval> {
+        return this.run<Eval>($$dpth,
+            () => {
+                let $scope$str: Nullable<string>;
+                let $$res: Nullable<Eval> = null;
+                if (true
+                    && this.regexAccept(String.raw`(?:\$)`, $$dpth + 1, $$cr) !== null
+                    && ($scope$str = this.regexAccept(String.raw`(?:[^\$]*)`, $$dpth + 1, $$cr)) !== null
+                    && this.regexAccept(String.raw`(?:\$)`, $$dpth + 1, $$cr) !== null
+                ) {
+                    $$res = new Eval($scope$str);
                 }
                 return $$res;
             });

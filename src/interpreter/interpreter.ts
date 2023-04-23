@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { metric as m } from "../deps.ts";
+import { ExprParser, metric as m } from "../deps.ts";
 import {
     AstArg,
     AstDrawStep,
@@ -12,6 +12,7 @@ import {
     isDecl,
     isDestruct,
     isDraw,
+    isEval,
     isLine2P,
     isSaveFile,
     isTrig,
@@ -39,8 +40,10 @@ export default class Interpreter {
         line: string;
         text: string;
     };
+    isRepl: boolean;
+    exprParser: ExprParser | null = null;
 
-    constructor(options: Record<string, any>) {
+    constructor(isRepl: boolean, options: Record<string, any> = {}) {
         this.objs = {};
         this.config = Object.assign({
             width: 300,
@@ -60,6 +63,7 @@ export default class Interpreter {
             line: "",
             text: "",
         };
+        this.isRepl = isRepl;
     }
 
     interpret(str: string) {
@@ -75,6 +79,9 @@ export default class Interpreter {
                 let value;
                 if (isCoord(right)) {
                     value = m.point(right.x, right.y);
+                } else if (isEval(right)) {
+                    this.#initExprParser();
+                    value = this.exprParser!.evaluate(right.str, <any>this.objs);
                 } else {
                     value = this.#evalExpr(right);
                     if (!value) {
@@ -83,7 +90,7 @@ export default class Interpreter {
                         );
                     }
                 }
-                console.log(value);
+                if (this.isRepl) console.log(value);
                 if (isDestruct(left)) {
                     // console.log(left);
                     if (left.tar1 != "_") this.objs[left.tar1] = value[0];
@@ -120,6 +127,25 @@ export default class Interpreter {
         return `<svg xmlns="http://www.w3.org/2000/svg" width="${this.config.width}" height="${this.config.height}" viewBox="${minX} ${minY} ${this.config.width} ${this.config.height}">${this.svg.line}${this.svg.dots}${this.svg.text}</svg>`;
     }
 
+    #initExprParser() {
+        if (this.exprParser == null) {
+            this.exprParser = new ExprParser({
+                operators: {
+                    add: true,
+                    conditional: true,
+                    divide: true,
+                    factorial: true,
+                    multiply: true,
+                    power: true,
+                    remainder: true,
+                    subtract: true,
+                    'in': false,
+                    assignment: false
+                }
+            });
+        }
+    }
+
     #draw(drawStep: AstDrawStep) {
         const step = drawStep.step;
         let tempConf: Record<string, string> = {};
@@ -149,14 +175,14 @@ export default class Interpreter {
                 }
             }
         } else if (isLine2P(step)) {
-            const x = <m.Point> this.objs[step.a];
-            const y = <m.Point> this.objs[step.b];
+            const x = <m.Point>this.objs[step.a];
+            const y = <m.Point>this.objs[step.b];
             this.svg.line += drawSegment(x, y, tempConf);
         } else if (
             isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
         ) {
             this.svg.line += drawCircle(
-                <m.Circle> this.#evalArg(step),
+                <m.Circle>this.#evalArg(step),
                 tempConf,
             );
         } else throw Error(`Unrecognized drawing step ${step}`);
@@ -178,35 +204,38 @@ export default class Interpreter {
             return arg;
         } else if (isLine2P(arg)) {
             return m.line(
-                <m.Point> this.objs[arg.a],
-                <m.Point> this.objs[arg.b],
+                <m.Point>this.objs[arg.a],
+                <m.Point>this.objs[arg.b],
             );
         } else if (isTrig(arg)) {
             return [
-                <m.Point> this.objs[arg.a],
-                <m.Point> this.objs[arg.b],
-                <m.Point> this.objs[arg.c],
+                <m.Point>this.objs[arg.a],
+                <m.Point>this.objs[arg.b],
+                <m.Point>this.objs[arg.c],
             ];
         } else if (isCircleOR(arg)) {
             if (typeof arg.radius == "number") {
-                return m.circle(<m.Point> this.objs[arg.center], arg.radius);
+                return m.circle(<m.Point>this.objs[arg.center], arg.radius);
             } else {
                 return m.circle(
-                    <m.Point> this.objs[arg.center],
-                    <number> this.objs[arg.radius],
+                    <m.Point>this.objs[arg.center],
+                    <number>this.objs[arg.radius],
                 );
             }
         } else if (isCircleOA(arg)) {
             return m.circle(
-                <m.Point> this.objs[arg.center],
-                <m.Point> this.objs[arg.thru],
+                <m.Point>this.objs[arg.center],
+                <m.Point>this.objs[arg.thru],
             );
         } else if (isCircle3P(arg)) {
             return m.circle(
-                <m.Point> this.objs[arg.a],
-                <m.Point> this.objs[arg.b],
-                <m.Point> this.objs[arg.c],
+                <m.Point>this.objs[arg.a],
+                <m.Point>this.objs[arg.b],
+                <m.Point>this.objs[arg.c],
             );
+        } else if (isEval(arg)) {
+            this.#initExprParser();
+            return this.exprParser?.evaluate(arg.str, <any>this.objs);
         }
         throw Error(`Unrecognized argument ${arg}`);
     }

@@ -9,7 +9,7 @@ File := NewLine? head=FileLine tail=FileLineTail* NewLine? $
 FileLine := WS? ln={Draw | Decl | ConfigLine | SaveFile} WS? .val = ast.AstFileLine { return ln.val; }
 FileLineTail := NewLine ln=FileLine .val = ast.AstFileLine { return ln.val; }
 
-Decl := l=DeclLeft WS? '=' WS? r={Expr | Coord}
+Decl := l=DeclLeft WS? '=' WS? r={Coord | Expr | Eval}
     .val = ast.AstDecl { return { kind: "decl", tar: l.val, val: r.val } }
 DeclLeft := tar={Destruct | Direct} .val = ast.AstDeclLeft { return tar.val; }
 Destruct := tar1={PointID | CommonID} WS? ',' WS? tar2={PointID | CommonID}
@@ -24,17 +24,18 @@ Expr := meth=Method WS head=Arg tail=ArgTail* WS?
             args: [head.val].concat(tail.map((arg, _) => arg.val)),
         }
     }
-Method := name='[^\n\r \t]+' .val = string { return name; }
-Arg := arg={Triangle | Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID | Number}
+Method := name='[^\n\r \t\$]+' .val = string { return name; }
+Arg := arg={Triangle | Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID | Number | Eval}
     .val = ast.AstArg { return arg.val; }
 ArgTail := WS? ',' WS? arg=Arg
     .val = ast.AstArg { return arg.val; }
 
 Coord := c={RightCoord | PolarCoord} .val = ast.AstCoord { return c.val; }
 RightCoord := '\(' WS? x=RNumber WS? ',' WS? y=RNumber WS? '\)'
-    .val = ast.AstCoord { return { x: x.val, y: y.val }; }
+    .val = ast.AstCoord { return { kind: "coord", x: x.val, y: y.val }; }
 PolarCoord := '\(' WS? r=RNumber WS? ':' WS? a=Number WS? '\)'
     .val = ast.AstCoord { return {
+        kind: "coord",
         x: r.val * Math.cos(a.val),
         y: r.val * Math.sin(a.val)
     }; }
@@ -69,6 +70,8 @@ ConfigTail := WS? ',' WS? step=Config
 
 SaveFile := 'save' WS path='[^\n\r]+'
     .val = ast.AstSaveFile { return { kind: "save", path }; }
+Eval := '\$' str='[^\$]*' '\$'
+    .val = ast.AstEval { return { kind: "eval", str }; }
 
 Line2P := a=PointID b=PointID
     .val = ast.AstLine2P { return { kind: "line2p", a: a.val, b: b.val } }

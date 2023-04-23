@@ -2,6 +2,11 @@ import { metric as m } from "../deps.ts";
 
 // deno-lint-ignore ban-types
 export const METHODS: Record<string, Function> = {
+    // deno-lint-ignore no-explicit-any
+    ":": (x: any) => x,
+    "+": (x: number, y: number) => m.point(x, y),
+    "+r": (r: number, a: number) => m.point(r * Math.cos(a), r * Math.sin(a)),
+
     "#": m.inter,
     i: m.inter,
     "|-": m.perp,

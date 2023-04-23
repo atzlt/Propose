@@ -37,7 +37,7 @@ export type AstArg =
     | AstCircle3P
     | AstCircleOA
     | AstCircleOR
-    | AstTriangle
+    | AstEval
     | number;
 
 export type AstExpr = {
@@ -46,6 +46,7 @@ export type AstExpr = {
 };
 
 export type AstCoord = {
+    kind: "coord",
     x: number;
     y: number;
 };
@@ -66,7 +67,7 @@ export type AstDeclLeft = AstDestruct | AstDirect;
 export type AstDecl = {
     kind: "decl";
     tar: AstDeclLeft;
-    val: AstExpr | AstCoord;
+    val: AstExpr | AstCoord | AstEval;
 };
 
 export type AstDrawStep = {
@@ -93,6 +94,11 @@ export type AstSaveFile = {
     kind: "save";
     path: string;
 };
+
+export type AstEval = {
+    kind: "eval",
+    str: string;
+}
 
 export type AstFileLine = AstDecl | AstDraw | AstConfigLine | AstSaveFile;
 
@@ -148,5 +154,10 @@ export function isSaveFile(x: any): x is AstSaveFile {
 
 // deno-lint-ignore no-explicit-any
 export function isCoord(x: any): x is AstCoord {
-    return x.x != undefined && x.y != undefined;
+    return x.kind == "coord";
+}
+
+// deno-lint-ignore no-explicit-any
+export function isEval(x: any): x is AstEval {
+    return x.kind == "eval";
 }

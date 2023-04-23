@@ -1,0 +1,9 @@
+O = (0, 0)
+c =: (O, 2)
+x =: 1
+y = $ 2 * x * sqrt 2 $
+A =+ y, 0
+z = $ y / 2 $
+B =+ z, z
+C =+ z, $ -z $
+draw c,O,A,B,C,OA,OB,BA,AC,CO

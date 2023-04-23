@@ -2,7 +2,8 @@
     "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
     "tasks": {
         "parser": "tspeg --num-enums --include-grammar-comment=false grammar.peg src/interpreter/parser.ts",
-        "dist": "deno compile --allow-read --allow-write -o dist/propose.exe --target x86_64-pc-windows-msvc src/index.ts"
+        "dist": "deno compile --allow-read --allow-write -o dist/propose.exe --target x86_64-pc-windows-msvc src/index.ts",
+        "bundle": "deno run --allow-read --allow-write --allow-net --allow-env bundle_interpreter.ts"
     },
     "fmt": {
         "options": {
