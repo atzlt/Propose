@@ -63,6 +63,18 @@ There are many types of arguments:
 5. Circle throught 3 points: `(A B C)` means the circle passing through `A`, `B` and `C`. Whitespaces are not required: `(ABC)` is equivalent to `(A B C)`.
 6. A number: either a number literal like `1.3` or an angle in degree like `20deg`. A number literal can also be passed as an angle, but in radians.
 7. A triangle: `ABC` means triangle `ABC`. **There should not be any whitespaces.**
+8. A math expression. See [expr-eval](https://github.com/silentmatt/expr-eval) for documentation. `in` and assignment are _disabled_.
+
+### Expression Evaluation
+
+You can also use an expression as the right-hand-side value.
+
+```
+x = $ sqrt 2 $
+y = $ x + 4 $
+```
+
+**The evaluation might silently fail.**
 
 ## Configuration
 
@@ -132,6 +144,16 @@ If `-i` is not present, you enter **REPL mode**. Here you insert codes line by l
 # Appendix: List of Methods
 
 Methods marked with **destruct** requires destruct declaration.
+
+---
+
+These three methods are recommended to be combined with the equal sign `=` for better style, e.g. `c =: (O, r)`, `B =+ 0, 4`.
+
+- `:` Returns the only argument directly. `: <anything>`. It can be used to access a coordinate (destructing a point returns its `x` and `y` coordinate; destructing a circle returs its center and radius.)
+- `+` Construct a point by two coordinates. `+ <x=number>, <y=number>`
+- `+r` Construct a point by radius and angle (polar coordinates). `+r <r=number> <theta=number (w/ or w/o deg)>`
+
+---
 
 - `#`, `i` intersection. For intersections with circles, this method requires **destruct declaration**. If a third argument is given, this should be one of the common points, and the another intersection will be placed at the first return value.
 - `|-`, `perp` perpendicular. `perp <point>, <line>`
