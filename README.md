@@ -9,18 +9,35 @@ For a usage guide see [Usage](./Usage.md).
 ### Incircle
 
 ```
-config width=250, height=200
+config height=340, width=450, minX=-140, minY=-150
 
-A = (-3, 2)
-B = (3, 2)
-C = (1, -2)
-I = cI A, B, C
-r = d I, AB
+O = (0, 0)
+c = @ O, 3
+A = (3 : -40deg)
+B = (3 : 50deg)
+C = (3 : 220deg)
+l, _ = tan A, c
+k, _ = tan C, c
+T = # l, k
+D, _ = # TB, c, B
+l, _ = tan B, c
+k, _ = tan D, c
+S = # l, k
 
-draw A, B, C, AB, BC, CA, I
-
-config color=blue
-draw (I, r)
+draw c, A[label=A,loc=-60deg], B[label=B,loc=50deg], C[label=C,loc=220deg,dist=0.4], D[label=D,loc=-65deg,dist=0.4], AB, BC, CD, DA, T, AT, CT, BT, S, CS [color=blue], BS, DS
 ```
 
-[Output: Incircle](./test_input/incircle.svg)
+![Output: Harmonic](./test_input/harmonic.svg)
+
+## Features
+
+- [x] Drawing with various styles
+- [x] REPL mode
+- [x] Evaluate math expressions
+- [ ] Labels
+- [ ] Text decoration
+
+### Plans
+
+- [ ] Draw infinite lines
+- [ ] Draw arcs

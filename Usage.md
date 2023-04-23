@@ -1,3 +1,11 @@
+# Introduction
+
+Propose is a tool to generate geometric figures from text files. The source format is easy to learn and straightforward to understand.
+
+I created this tool because I can't find an appropriate tool to generate SVG format images for geometric figures on my math textbooks. If you have similar needs you might find this useful.
+
+This small project is still being developed.
+
 # Propose Syntax
 
 A Propose file consists of **lines**. A line can either be
@@ -91,6 +99,7 @@ The value can be a string, a number or a number with `deg` suffix.
 3. `color, fill, linewidth, dotsize` Very straightfoward. Default: `#000000`, `#00000000`, `1.5`, `2.5`.
 4. `dash` Dash line style, set [the `stroke-dasharray` attribute](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray). Default: `undefined`.
 5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `0.3` (**in centimeters**).
+6. `labelsize` The default size of the label.
 
 ## Drawing
 

@@ -22,17 +22,9 @@
     "https://deno.land/x/metric@v1.1.0/src/calc/transform.ts": "df138b8503c8c832eee5fe8054ade9581f78006d818f8faba0385c590900c506",
     "https://deno.land/x/metric@v1.1.0/src/errors.ts": "454a4eb848c1f0628694436dff68c48550496cc98a2a4a41f8da6926b01e907f",
     "https://deno.land/x/metric@v1.1.0/src/index.ts": "bfb21eab9d62b6dbf6f9366a34347fa0729fb805a389635568774112cf33afc5",
-    "https://deno.land/x/metric@v1.1.0/src/objects.ts": "c1e1db93214fa156143f01c0c6b3786d54d1cab230b1265f57b2c46699b33bca"
-  },
-  "npm": {
-    "specifiers": {
-      "expr-eval": "expr-eval@2.0.2"
-    },
-    "packages": {
-      "expr-eval@2.0.2": {
-        "integrity": "sha512-4EMSHGOPSwAfBiibw3ndnP0AvjDWLsMvGOvWEZ2F96IGk0bIVdjQisOHxReSkE13mHcfbuCiXw+G4y0zv6N8Eg==",
-        "dependencies": {}
-      }
-    }
+    "https://deno.land/x/metric@v1.1.0/src/objects.ts": "c1e1db93214fa156143f01c0c6b3786d54d1cab230b1265f57b2c46699b33bca",
+    "https://esm.sh/expr-eval@2.0.2": "118e148dba2eccebbb65b5ecf3ea25dd4213acd552d1039ec958aeed74a97346",
+    "https://esm.sh/v116/expr-eval@2.0.2/deno/expr-eval.mjs": "be686d8178c5b987f98483d6475366b46ceed6bea00d59f03bdd51ab584e19dc",
+    "https://esm.sh/v116/expr-eval@2.0.2/parser.d.ts": "37aad35b3ecad99468aa414906f6db5626de3df32ead71463d38e2e677329f55"
   }
 }
