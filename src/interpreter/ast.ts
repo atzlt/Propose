@@ -30,6 +30,18 @@ export type AstCircle3P = {
     c: string;
 };
 
+export type AstPolygon = {
+    kind: "poly";
+    P: string[];
+}
+
+export type AstArc = {
+    kind: "arc";
+    a: string;
+    b: string;
+    c: string;
+}
+
 export type AstArg =
     | string
     | AstLine2P
@@ -71,7 +83,7 @@ export type AstDecl = {
 };
 
 export type AstDrawStep = {
-    step: AstLine2P | AstCircleOA | AstCircleOR | AstCircle3P | string;
+    step: AstPolygon | AstArc | AstLine2P | AstCircleOA | AstCircleOR | AstCircle3P | string;
     conf: AstConfig[];
 };
 
@@ -130,6 +142,16 @@ export function isCircleOA(x: any): x is AstCircleOA {
 // deno-lint-ignore no-explicit-any
 export function isCircle3P(x: any): x is AstCircle3P {
     return x.kind == "o3p";
+}
+
+// deno-lint-ignore no-explicit-any
+export function isPoly(x: any): x is AstPolygon {
+    return x.kind == "poly";
+}
+
+// deno-lint-ignore no-explicit-any
+export function isArc(x: any): x is AstArc {
+    return x.kind == "arc";
 }
 
 // deno-lint-ignore no-explicit-any

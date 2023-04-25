@@ -21,9 +21,11 @@ export const METHODS: Record<string, Function> = {
     angBsct: m.angleBisect,
     tan: m.tangent,
     mid: m.midpoint,
+
     "@": m.circle,
     l: m.line,
     d: m.distance,
+    ang: m.angle,
 
     refl: m.refl,
     inv: m.calc.transform.invert,

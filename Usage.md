@@ -98,7 +98,7 @@ The value can be a string, a number or a number with `deg` suffix.
 2. `minX, minY` The `minX` and `minY` of the `viewBox`. Default: if not set then `minX = -width / 2`, `minY = -height / 2`.
 3. `color, fill, linewidth, dotsize` Very straightfoward. Default: `#000000`, `#00000000`, `1.5`, `2.5`.
 4. `dash` Dash line style, set [the `stroke-dasharray` attribute](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray). Default: `undefined`.
-5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `0.3` (**in centimeters**).
+5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `10`.
 6. `labelsize` The default size of the label.
 
 ## Drawing
@@ -111,7 +111,26 @@ Draw some objects. **Currently does not support drawing (infinite) lines.**
 
 You can inline some temporary configurations in square brackets `[]`. The configurations only work for the current object. For all configurations see the previous section. There's only one additional configuration: `label`, which is the text to be labelled on this object. **Labelling currently only works for points and circles.**
 
+You can also fill a polygon:
+
+```
+draw A-B-C-D-E[fill=#ff000033]
+```
+
+or an 3-point arc:
+
+```
+draw A~B~C[dash=5]
+```
+
 The unit length is 1 centimeter. The y-axis of SVG coordinate system is flipped, so a point `(a, b)` is actually rendered as `x="a cm", y="-b cm"` in the output.
+
+### Units
+
+Normally everything you draw is using `cm` as unit length, **_except for_**:
+
+1. Height, width, `minX`, `minY`.
+2. `dist` (distance of label).
 
 ## Save file
 
@@ -141,7 +160,12 @@ l, _ = tan B, c
 k, _ = tan D, c
 S = # l, k
 
-draw c, A[label=A,loc=-60deg], B[label=B,loc=50deg], C[label=C,loc=220deg,dist=0.4], D[label=D,loc=-65deg,dist=0.4], AB, BC, CD, DA, T, AT, CT, BT, S, CS [color=blue], BS, DS
+draw c[label=c,loc=160deg], A[label=A,loc=-60deg], B[label=B,loc=50deg]
+draw C[label=C,loc=220deg,dist=13]
+draw D[label=D,loc=-65deg,dist=13]
+draw AB, BC, CD, DA, T, AT, CT, BT, S
+draw CS[color=blue,dash=5], BS, DS
+draw A-B-C-D[fill=#ff000033]
 ```
 
 # Using the CLI

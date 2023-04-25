@@ -4,6 +4,7 @@ import {
     AstArg,
     AstDrawStep,
     AstExpr,
+    isArc,
     isCircle3P,
     isCircleOA,
     isCircleOR,
@@ -14,10 +15,11 @@ import {
     isDraw,
     isEval,
     isLine2P,
+    isPoly,
     isSaveFile,
     isTrig,
 } from "./ast.ts";
-import { drawCircle, drawDot, drawLabel, drawSegment } from "./draw.ts";
+import { drawArc3P, drawCircle, drawDot, drawLabel, drawPolygon, drawSegment } from "./draw.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
 
@@ -39,6 +41,7 @@ export default class Interpreter {
         dots: string;
         line: string;
         text: string;
+        area: string;
     };
     isRepl: boolean;
     exprParser: ExprParser | null = null;
@@ -55,13 +58,14 @@ export default class Interpreter {
             linewidth: 1.5,
             dotsize: 2.5,
             loc: 0,
-            dist: 0.3,
+            dist: 10,
             labelsize: 15,
         }, options);
         this.svg = {
             dots: "",
             line: "",
             text: "",
+            area: "",
         };
         this.isRepl = isRepl;
     }
@@ -99,7 +103,7 @@ export default class Interpreter {
                     this.objs[left.tar] = value;
                 }
             } else if (isDraw(line)) {
-                // console.log(line);
+                // console.log(line.steps);
                 for (const drawStep of line.steps) {
                     this.#draw(drawStep);
                 }
@@ -124,7 +128,7 @@ export default class Interpreter {
         const minY = this.config.minY
             ? this.config.minY
             : -parseFloat(this.config.height) / 2;
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${this.config.width}" height="${this.config.height}" viewBox="${minX} ${minY} ${this.config.width} ${this.config.height}">${this.svg.line}${this.svg.dots}${this.svg.text}</svg>`;
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${this.config.width}" height="${this.config.height}" viewBox="${minX} ${minY} ${this.config.width} ${this.config.height}">${this.svg.area}${this.svg.line}${this.svg.dots}${this.svg.text}</svg>`;
     }
 
     #initExprParser() {
@@ -181,9 +185,24 @@ export default class Interpreter {
         } else if (
             isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
         ) {
-            this.svg.line += drawCircle(
-                <m.Circle>this.#evalArg(step),
-                tempConf,
+            const obj = <m.Circle>this.#evalArg(step);
+            this.svg.line += drawCircle(obj, tempConf);
+            if (tempConf.label != undefined) {
+                this.svg.text += drawLabel(
+                    m.calc.point_on.onCircle(
+                        obj,
+                        parseFloat(tempConf.loc),
+                    ),
+                    tempConf,
+                );
+            }
+        } else if (isPoly(step)) {
+            this.svg.area += drawPolygon(<m.Point[]>step.P.map((val, _) => this.objs[val]), tempConf);
+        } else if (isArc(step)) {
+            this.svg.line += drawArc3P(
+                <m.Point>this.objs[step.a],
+                <m.Point>this.objs[step.b],
+                <m.Point>this.objs[step.c], tempConf
             );
         } else throw Error(`Unrecognized drawing step ${step}`);
     }
@@ -235,7 +254,7 @@ export default class Interpreter {
             );
         } else if (isEval(arg)) {
             this.#initExprParser();
-            return this.exprParser?.evaluate(arg.str, <any>this.objs);
+            return this.exprParser!.evaluate(arg.str, <any>this.objs);
         }
         throw Error(`Unrecognized argument ${arg}`);
     }

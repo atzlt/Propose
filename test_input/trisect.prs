@@ -1,0 +1,11 @@
+config minX = -10, height = 150, minY = -140
+
+A = (4 : 40deg)
+O = (0 : 0)
+B = (4 : 0)
+x = ang A, O, B
+x = $ x / 3 $
+C = rot B, O, x
+D = rot B, O, $ 2 * x $
+
+draw O, OA, OB, OC[color=red], OD[color=red]

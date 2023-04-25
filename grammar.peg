@@ -45,7 +45,7 @@ Draw := 'draw' WS head=DrawStep tail=DrawStepTail*
         kind: "draw",
         steps: [head.val].concat(tail.map((arg, _) => arg.val)),
     }; }
-DrawStep := step={Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID} WS? conf=DrawConfig?
+DrawStep := step={Polygon | Arc | Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID} WS? conf=DrawConfig?
     .val = ast.AstDrawStep { return {
         step: step.val,
         conf: conf ? conf.val : [],
@@ -83,6 +83,19 @@ CircleOA := '\(' WS? o=PointID WS? ',' WS? a=PointID WS? '\)'
     .val = ast.AstCircleOA { return { kind: "oa", center: o.val, thru: a.val }; }
 Circle3P := '\(' WS? a=PointID WS? b=PointID WS? c=PointID WS? '\)'
     .val = ast.AstCircle3P { return { kind: "o3p", a: a.val, b: b.val, c: c.val }; }
+Polygon := head=PointID tail=PolygonTail+
+    .val = ast.AstPolygon { return {
+        kind: "poly",
+        P: [head.val].concat(tail.map((arg, _) => arg.val)),
+    }; }
+PolygonTail := '-' p=PointID .val = string { return p.val; }
+Arc := a=PointID '~' b=PointID '~' c=PointID
+    .val = ast.AstArc { return {
+        kind: "arc",
+        a: a.val,
+        b: b.val,
+        c: c.val,
+    }; }
 
 PointID := name='[A-Z][a-z0-9\']*' .val = string { return name; }
 CommonID := name='[a-z_][a-z0-9\']*'  .val = string { return name; }
@@ -90,4 +103,4 @@ Number := num={Degree | RNumber} .val = number { return num.val; }
 RNumber := num='-?\d+(\.\d+)?' .val = number { return parseFloat(num); }
 Degree := num=RNumber 'deg' .val = number { return num.val * Math.PI / 180; }
 WS := '[ \t]+'
-NewLine := '[\n\r]+'
+NewLine := '[\n\r][\n\r \t]*'
