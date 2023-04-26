@@ -100,6 +100,7 @@ The value can be a string, a number or a number with `deg` suffix.
 4. `dash` Dash line style, set [the `stroke-dasharray` attribute](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray). Default: `undefined`.
 5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `10`.
 6. `labelsize` The default size of the label.
+7. `autolabel` Whether to enable autolabelling, using the name of the point being drawn. Default: `false`, turn on if any value is set to it (including the string `false`).
 
 ## Drawing
 
@@ -173,6 +174,8 @@ draw A-B-C-D[fill=#ff000033]
 CLI is currently very simple. You specify input by flag `-i` and output by `-o` (if not present and the input file name ends in `.prs`, the output file is calculated by replacing every `.prs` with `.svg`). For example, `propose -i test_input/incenter.prs` saves the output to `test_input/incenter.svg`.
 
 If `-i` is not present, you enter **REPL mode**. Here you insert codes line by line, and save to a file any time you like using `save` instruction. Type `exit` or press `Ctrl+C` to exit. Any error produced will _not_ stop the REPL.
+
+Use `-L` to enable autolabelling.
 
 # Appendix: List of Methods
 

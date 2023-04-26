@@ -23,6 +23,11 @@ function main() {
                 aliases: ["v"],
                 standalone: true,
             },
+            {
+                name: "autolabel",
+                aliases: ["L"],
+                type: "boolean",
+            },
         ],
     });
 
@@ -35,12 +40,12 @@ function main() {
         const decoder = new TextDecoder("utf-8");
         const encoder = new TextEncoder();
         const input = decoder.decode(Deno.readFileSync(flags.in));
-        const interpreter = new Interpreter(false);
+        const interpreter = new Interpreter(false, { autolabel: flags.autolabel });
         interpreter.interpret(input);
         Deno.writeFileSync(flags.out, encoder.encode(interpreter.emit()));
     } else {
         console.log(`This is the Propose REPL, version ${VERSION}.`);
-        const interpreter = new Interpreter(true);
+        const interpreter = new Interpreter(true, { autolabel: flags.autolabel });
         while (true) {
             const line = prompt(">");
             if (line != null && line.trim() == "exit") break;

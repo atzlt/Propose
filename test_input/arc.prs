@@ -12,6 +12,6 @@ draw A~E~G, G~I~C, C~E~A
 config color=blue
 draw B~E~D, D~G~H, H~E~F, F~C~B
 config color=red
-draw B~I~D
+draw B~I~D[label=arc,loc=-130deg,dist=35]
 config color=green
 draw B~A~D, D~E~H, H~I~F, F~E~B

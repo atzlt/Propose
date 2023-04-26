@@ -1,4 +1,4 @@
-config width=300, height=220, minY=-100, minX=-140
+config width=300, height=220, minY=-100, minX=-140, autolabel=true
 
 A = (-3, -2)
 B = (3, -2)
@@ -6,5 +6,5 @@ C = (1, 2)
 I = cI ABC
 r = d I, AB
 
-draw A[label=A,loc=200deg], B[label=B,loc=-20deg], C[label=C,loc=90deg]
-draw AB, BC, CA, I[label=I], (I, r)[color=blue]
+draw A[loc=200deg], B[loc=-20deg], C[loc=90deg]
+draw AB, BC, CA, I, (I, r)[color=blue]
