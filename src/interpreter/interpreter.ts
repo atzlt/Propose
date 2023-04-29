@@ -21,6 +21,7 @@ import {
 } from "./ast.ts";
 import {
     CM,
+    calcArc,
     drawArc3P,
     drawCircle,
     drawDot,
@@ -44,6 +45,7 @@ type Config = {
     dotsize?: number;
     loc?: number;
     dist?: number;
+    angle?: number;
     labelsize?: number;
     autolabel?: false;
     font?: string;
@@ -74,6 +76,7 @@ export default class Interpreter {
             dotsize: 2.5,
             loc: 0,
             dist: 10,
+            angle: 0,
             labelsize: 15,
             autolabel: false,
             font: "serif",
@@ -173,8 +176,9 @@ export default class Interpreter {
 
     #draw(drawStep: AstDrawStep) {
         const step = drawStep.step;
-        let tempConf: Record<string, string | number | boolean> = {};
+        let tempConf: Config = {};
         for (const conf of drawStep.conf) {
+            // @ts-ignore: Cannot infer input type from user content
             tempConf[conf.conf] = conf.value;
         }
         tempConf = { ...this.config, ...tempConf };
@@ -199,7 +203,7 @@ export default class Interpreter {
                     this.svg.text += drawLabel(
                         m.calc.point_on.onCircle(
                             obj,
-                            <number> tempConf.loc,
+                            tempConf.loc!,
                         ),
                         tempConf,
                     );
@@ -218,7 +222,7 @@ export default class Interpreter {
                 this.svg.text += drawLabel(
                     m.calc.point_on.onCircle(
                         obj,
-                        <number> tempConf.loc,
+                        tempConf.loc!,
                     ),
                     tempConf,
                 );
@@ -232,14 +236,15 @@ export default class Interpreter {
             const A = <m.Point> this.objs[step.a];
             const B = <m.Point> this.objs[step.b];
             const C = <m.Point> this.objs[step.c];
-            const obj = m.circle(A, B, C);
-            this.svg.line += drawArc3P(A, B, C, tempConf);
+            const arc = calcArc(A, B, C);
+            this.svg.line += drawArc3P(arc, tempConf);
             if (tempConf.label != undefined) {
+                tempConf.loc = tempConf.loc! * arc.angle;
                 this.svg.text += drawLabel(
                     m.calc.transform.rotate(
                         A,
-                        obj[0],
-                        <number> tempConf.loc,
+                        arc.center,
+                        tempConf.loc,
                     ),
                     tempConf,
                 );

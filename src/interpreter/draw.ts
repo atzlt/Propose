@@ -1,4 +1,5 @@
 import { metric as m } from "../deps.ts";
+import { Arc } from "./parser.ts";
 
 export const CM = 37.795;
 
@@ -55,28 +56,58 @@ export function drawPolygon(
     }" fill="${conf.fill}"/>`;
 }
 
+type ArcData = {
+    start: m.Point;
+    end: m.Point;
+    radius: number;
+    center: m.Point;
+    large_arc: boolean;
+    sweep: boolean; // true = counterclockwise
+    angle: number;
+};
+
+export function calcArc(A: m.Point, B: m.Point, C: m.Point): ArcData {
+    const [O, r] = m.circle(A, B, C);
+    const x1 = B[0] - A[0];
+    const x2 = C[0] - B[0];
+    const y1 = B[1] - A[1];
+    const y2 = C[1] - B[1];
+    const large_arc = x1 * x2 + y1 * y2 < 0;
+    const sweep = x1 * y2 > x2 * y1;
+    let angle = m.angle(A, O, C);
+    angle = large_arc ? 2 * Math.PI - angle : angle;
+    angle = sweep ? angle : -angle;
+    return {
+        start: A,
+        end: C,
+        radius: r,
+        center: O,
+        large_arc,
+        sweep,
+        angle,
+    };
+}
+
 export function drawArc3P(
-    A: m.Point,
-    B: m.Point,
-    C: m.Point,
+    arc: ArcData,
     conf: {
         color?: string;
         linewidth?: number;
         dash?: string;
     },
 ) {
-    const [_, r] = m.circle(A, B, C);
-    const x1 = B[0] - A[0];
-    const x2 = C[0] - B[0];
-    const y1 = B[1] - A[1];
-    const y2 = C[1] - B[1];
-    const large_arc = x1 * x2 + y1 * y2 > 0 ? 0 : 1;
-    const sweep = x1 * y2 > x2 * y1 ? 0 : 1;
+    const {
+        radius,
+        large_arc,
+        sweep,
+        start,
+        end,
+    } = arc;
     const dash = conf.dash ? ` stroke-dasharray="${conf.dash}"` : "";
-    return `<path d="M ${A[0] * CM},${-A[1] * CM} A ${r * CM} ${
-        r * CM
-    } 0 ${large_arc} ${sweep} ${C[0] * CM},${
-        -C[1] * CM
+    return `<path d="M ${start[0] * CM},${-start[1] * CM} A ${radius * CM} ${
+        radius * CM
+    } 0 ${large_arc ? 1 : 0} ${sweep ? 0 : 1} ${end[0] * CM},${
+        -end[1] * CM
     }" fill="none" stroke="${conf.color}" stroke-width="${conf.linewidth}"${dash}/>`;
 }
 
@@ -84,18 +115,18 @@ export function drawLabel(
     P: m.Point,
     conf: {
         label?: string;
-        labelsize?: string;
-        loc?: string;
-        dist?: string;
+        labelsize?: number;
+        dist?: number;
+        angle?: number;
         font?: string;
     },
 ) {
-    const loc = parseFloat(conf.loc!);
-    const dist = parseFloat(conf.dist!) / CM;
-    const x = P[0] + dist * Math.cos(loc);
-    const y = P[1] + dist * Math.sin(loc);
+    const dist = conf.dist! / CM;
+    const angle = conf.angle!;
+    const x = P[0] + dist * Math.cos(angle);
+    const y = P[1] + dist * Math.sin(angle);
     const label = conf.label!;
-    const size = parseFloat(conf.labelsize!);
+    const size = conf.labelsize!;
     let text = "";
     if (label.length == 1 || label[0].match(/[A-Z]/) == null) {
         text = label;

@@ -98,7 +98,7 @@ The value can be a string, a number or a number with `deg` suffix.
 2. `minX, minY` The `minX` and `minY` of the `viewBox`. Default: if not set then `minX = -width / 2`, `minY = -height / 2`.
 3. `color, fill, linewidth, dotsize` Very straightfoward. Default: `#000000`, `#00000000`, `1.5`, `2.5`.
 4. `dash` Dash line style, set [the `stroke-dasharray` attribute](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray). Default: `undefined`.
-5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `10`.
+5. `loc, angle, dist` The default location, angle and distance for labels Default: `0`, `0`, `10`.
 6. `labelsize` The default size of the label.
 7. `font` The font family of the label.
 8. `autolabel` Whether to enable autolabelling, using the name of the point being drawn. Default: `false`, turn on if any value is set to it (including the string `false`).
@@ -131,6 +131,16 @@ The unit length is 1 centimeter. The y-axis of SVG coordinate system is flipped,
 
 Normally everything you draw is using `cm` as unit length, **_except for_** `dist` (distance of label), `dotsize`, `labelsize`, `dash`, or other configurations involving only _small distances_.
 
+### Labelling
+
+You can control the position of the label by setting `loc`, `angle`, `dist`.
+
+`loc` controls the location of the label. On segments and arcs, this is the ratio between two parts (`0` is at the start, `1` at the end, allows negative values and values larger than `1`). On circles this is the angle (start from x-axis, counter-clockwise).
+
+`angle` controls the angle of the label. The label is on a circle with center `loc` and radius `dist`. `angle` controls its exact position on this circle (start from x-axis, counter-clockwise).
+
+`dist` is the distance between the label and `loc`.
+
 ## Save file
 
 ```
@@ -159,9 +169,9 @@ l, _ = tan B, c
 k, _ = tan D, c
 S = # l, k
 
-draw c[label=c,loc=160deg], A[label=A,loc=-60deg], B[label=B,loc=50deg]
-draw C[label=C,loc=220deg,dist=13]
-draw D[label=D,loc=-65deg,dist=13]
+draw c[label=c,loc=160deg,angle=160deg], A[label=A,angle=-60deg], B[label=B,angle=50deg]
+draw C[label=C,angle=220deg,dist=13]
+draw D[label=D,angle=-65deg,dist=13]
 draw AB, BC, CD, DA, T, AT, CT, BT, S
 draw CS[color=blue,dash=5], BS, DS
 draw A-B-C-D[fill=#ff000033]

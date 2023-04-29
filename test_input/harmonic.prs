@@ -13,9 +13,9 @@ l, _ = tan B, c
 k, _ = tan D, c
 S = # l, k
 
-draw c[label=c,loc=160deg], A[label=A,loc=-60deg], B[label=B,loc=50deg]
-draw C[label=C,loc=220deg,dist=13]
-draw D[label=D,loc=-65deg,dist=13]
+draw c[label=c,loc=160deg,angle=160deg], A[label=A,angle=-60deg], B[label=B,angle=50deg]
+draw C[label=C,angle=220deg,dist=13]
+draw D[label=D,angle=-65deg,dist=13]
 draw AB, BC, CD, DA, T, AT, CT, BT, S
 draw CS[color=blue,dash=5], BS, DS
 draw A-B-C-D[fill=#ff000033]
