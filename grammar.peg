@@ -60,10 +60,9 @@ ConfigLine := 'config' WS head=Config tail=ConfigTail*
         kind: "config",
         confs: [head.val].concat(tail.map((arg, _) => arg.val)),
     }; }
-Config := conf='[A-Za-z_]+' WS? '=' WS? value='[^\]\)\n\r,]*'
+Config := conf='[A-Za-z_]+' WS? '=' WS? value={Number | Boolean | ConfString}
     .val = ast.AstConfig {
-        if (value.endsWith("deg")) value = (parseFloat(value) * Math.PI / 180).toString();
-        return { conf, value }
+        return { conf, value: value.val }
     }
 ConfigTail := WS? ',' WS? step=Config
     .val = ast.AstConfig { return step.val; }
@@ -102,5 +101,7 @@ CommonID := name='[a-z_][a-z0-9\']*'  .val = string { return name; }
 Number := num={Degree | RNumber} .val = number { return num.val; }
 RNumber := num='-?\d+(\.\d+)?' .val = number { return parseFloat(num); }
 Degree := num=RNumber 'deg' .val = number { return num.val * Math.PI / 180; }
+Boolean := str='(true)|(false)' .val = boolean { return str === "true" ? true : false; }
+ConfString := str='[^\]\)\n\r,]*' .val = string { return str; }
 WS := '[ \t]+'
 NewLine := '[\n\r][\n\r \t]*'

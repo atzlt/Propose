@@ -20,6 +20,7 @@ import {
     isTrig,
 } from "./ast.ts";
 import {
+    CM,
     drawArc3P,
     drawCircle,
     drawDot,
@@ -32,18 +33,27 @@ import { parse } from "./parser.ts";
 
 type ObjectsRecord = Record<string, m.GObject | number>;
 
-type InterpreterOption = {
-    width?: any;
-    height?: any;
-    color?: any;
-    fill?: any;
-    linewidth?: any;
-    dotsize?: any;
+type Config = {
+    width?: number;
+    height?: number;
+    minX?: number;
+    minY?: number;
+    color?: string;
+    fill?: string;
+    linewidth?: number;
+    dotsize?: number;
+    loc?: number;
+    dist?: number;
+    labelsize?: number;
+    autolabel?: false;
+    font?: string;
+    dash?: string;
+    label?: string;
 };
 
 export default class Interpreter {
     objs: ObjectsRecord;
-    config: Record<string, any>;
+    config: Config;
     svg: {
         dots: string;
         line: string;
@@ -53,13 +63,11 @@ export default class Interpreter {
     isRepl: boolean;
     exprParser: ExprParser | null = null;
 
-    constructor(isRepl: boolean, options: Record<string, any> = {}) {
+    constructor(isRepl: boolean = false, options: Config = {}) {
         this.objs = {};
         this.config = Object.assign({
-            width: 300,
-            height: 300,
-            minX: -150,
-            minY: -150,
+            width: 10,
+            height: 10,
             color: "#000000",
             fill: "#00000000",
             linewidth: 1.5,
@@ -68,6 +76,7 @@ export default class Interpreter {
             dist: 10,
             labelsize: 15,
             autolabel: false,
+            font: "serif",
         }, options);
         this.svg = {
             dots: "",
@@ -120,6 +129,7 @@ export default class Interpreter {
                 }
             } else if (isConf(line)) {
                 for (const conf of line.confs) {
+                    // @ts-ignore: Cannot infer input type from user content
                     this.config[conf.conf] = conf.value;
                 }
             } else if (isSaveFile(line)) {
@@ -133,13 +143,13 @@ export default class Interpreter {
     }
 
     emit() {
-        const minX = this.config.minX
-            ? this.config.minX
-            : -parseFloat(this.config.width) / 2;
-        const minY = this.config.minY
-            ? this.config.minY
-            : -parseFloat(this.config.height) / 2;
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${this.config.width}" height="${this.config.height}" viewBox="${minX} ${minY} ${this.config.width} ${this.config.height}">${this.svg.area}${this.svg.line}${this.svg.dots}${this.svg.text}</svg>`;
+        // console.log(this.config);
+        const width = this.config.width! * CM;
+        const height = this.config.height! * CM;
+        const minX = this.config.minX ? this.config.minX * CM : -width / 2;
+        const minY = this.config.minY ? this.config.minY * CM : -height / 2;
+        // console.log([width, height, minX, minY]);
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${minX} ${minY} ${width} ${height}">${this.svg.area}${this.svg.line}${this.svg.dots}${this.svg.text}</svg>`;
     }
 
     #initExprParser() {
@@ -163,7 +173,7 @@ export default class Interpreter {
 
     #draw(drawStep: AstDrawStep) {
         const step = drawStep.step;
-        let tempConf: Record<string, string> = {};
+        let tempConf: Record<string, string | number | boolean> = {};
         for (const conf of drawStep.conf) {
             tempConf[conf.conf] = conf.value;
         }
@@ -189,7 +199,7 @@ export default class Interpreter {
                     this.svg.text += drawLabel(
                         m.calc.point_on.onCircle(
                             obj,
-                            parseFloat(tempConf.loc),
+                            <number> tempConf.loc,
                         ),
                         tempConf,
                     );
@@ -202,13 +212,13 @@ export default class Interpreter {
         } else if (
             isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
         ) {
-            const obj = <m.Circle> this.#evalArg(step);
+            const obj = <m.Circle> this.#resolveArg(step);
             this.svg.line += drawCircle(obj, tempConf);
             if (tempConf.label != undefined) {
                 this.svg.text += drawLabel(
                     m.calc.point_on.onCircle(
                         obj,
-                        parseFloat(tempConf.loc),
+                        <number> tempConf.loc,
                     ),
                     tempConf,
                 );
@@ -229,7 +239,7 @@ export default class Interpreter {
                     m.calc.transform.rotate(
                         A,
                         obj[0],
-                        parseFloat(tempConf.loc),
+                        <number> tempConf.loc,
                     ),
                     tempConf,
                 );
@@ -242,10 +252,10 @@ export default class Interpreter {
         if (fn == undefined) {
             throw new Error(`Undefined method ${expr.method}`);
         }
-        return fn.apply(null, expr.args.map((arg, _) => this.#evalArg(arg)));
+        return fn.apply(null, expr.args.map((arg, _) => this.#resolveArg(arg)));
     }
 
-    #evalArg(arg: AstArg) {
+    #resolveArg(arg: AstArg) {
         // console.log(arg);
         if (typeof arg == "string") {
             return this.objs[arg];

@@ -1,4 +1,4 @@
-config width=600, height=400, dotsize=7
+config width=14, height=10, dotsize=7
 
 O1 = (-3, 0)
 O2 = (2, 0)

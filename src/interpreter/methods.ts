@@ -46,4 +46,9 @@ export const METHODS: Record<string, Function> = {
     cOrtho: m.centers.orthocenter,
     cG: m.centers.centroid,
     cCentr: m.centers.centroid,
+    cGe: m.centers.gergonne,
+    cK: m.centers.symmedian,
+    cSym: m.centers.symmedian,
+    cBary: m.centers.fromBarycentric,
+    isoConj: m.centers.isogonalConjugate,
 };

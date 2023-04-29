@@ -1,4 +1,4 @@
-config height=340, width=450, minX=-140, minY=-150
+config height=10, width=13, minX=-4
 
 O = (0, 0)
 c = @ O, 3

@@ -1,6 +1,6 @@
 import { metric as m } from "../deps.ts";
 
-const CM = 37.795;
+export const CM = 37.795;
 
 export function drawSegment(
     A: m.Point,
@@ -87,6 +87,7 @@ export function drawLabel(
         labelsize?: string;
         loc?: string;
         dist?: string;
+        font?: string;
     },
 ) {
     const loc = parseFloat(conf.loc!);
@@ -99,9 +100,9 @@ export function drawLabel(
     if (label.length == 1 || label[0].match(/[A-Z]/) == null) {
         text = label;
     } else {
-        text = `${label[0]}<tspan baseline-shift="sub" font-size="${size * 0.7}">${
-            label.slice(1)
-        }</tspan>`;
+        text = `${label[0]}<tspan baseline-shift="sub" font-size="${
+            size * 0.7
+        }">${label.slice(1)}</tspan>`;
     }
-    return `<text font-size="${size}" font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="middle" x="${x}cm" y="${-y}cm">${text}</text>`;
+    return `<text font-size="${size}" font-family="${conf.font}" font-style="italic" text-anchor="middle" dominant-baseline="middle" x="${x}cm" y="${-y}cm">${text}</text>`;
 }

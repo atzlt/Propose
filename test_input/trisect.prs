@@ -1,4 +1,4 @@
-config minX = -10, height = 150, minY = -140
+config minX=-0.2, height=4, minY=-3.8, width=4.2
 
 A = (4 : 40deg)
 O = (0 : 0)

@@ -65,6 +65,9 @@ export enum ASTKinds {
     DrawConfig,
     ConfigLine,
     Config,
+    Config_$0_1,
+    Config_$0_2,
+    Config_$0_3,
     ConfigTail,
     SaveFile,
     Eval,
@@ -85,6 +88,8 @@ export enum ASTKinds {
     Number_$0_2,
     RNumber,
     Degree,
+    Boolean,
+    ConfString,
     WS,
     NewLine,
     $EOF,
@@ -382,17 +387,20 @@ export class ConfigLine {
 export class Config {
     public kind: ASTKinds.Config = ASTKinds.Config;
     public conf: string;
-    public value: string;
+    public value: Config_$0;
     public val: ast.AstConfig;
-    constructor(conf: string, value: string){
+    constructor(conf: string, value: Config_$0){
         this.conf = conf;
         this.value = value;
         this.val = ((): ast.AstConfig => {
-        if (value.endsWith("deg")) value = (parseFloat(value) * Math.PI / 180).toString();
-        return { conf, value }
+        return { conf, value: value.val }
         })();
     }
 }
+export type Config_$0 = Config_$0_1 | Config_$0_2 | Config_$0_3;
+export type Config_$0_1 = Number;
+export type Config_$0_2 = Boolean;
+export type Config_$0_3 = ConfString;
 export class ConfigTail {
     public kind: ASTKinds.ConfigTail = ASTKinds.ConfigTail;
     public step: Config;
@@ -600,6 +608,28 @@ export class Degree {
         this.num = num;
         this.val = ((): number => {
         return num.val * Math.PI / 180;
+        })();
+    }
+}
+export class Boolean {
+    public kind: ASTKinds.Boolean = ASTKinds.Boolean;
+    public str: string;
+    public val: boolean;
+    constructor(str: string){
+        this.str = str;
+        this.val = ((): boolean => {
+        return str === "true" ? true : false;
+        })();
+    }
+}
+export class ConfString {
+    public kind: ASTKinds.ConfString = ASTKinds.ConfString;
+    public str: string;
+    public val: string;
+    constructor(str: string){
+        this.str = str;
+        this.val = ((): string => {
+        return str;
         })();
     }
 }
@@ -1110,19 +1140,35 @@ export class Parser {
         return this.run<Config>($$dpth,
             () => {
                 let $scope$conf: Nullable<string>;
-                let $scope$value: Nullable<string>;
+                let $scope$value: Nullable<Config_$0>;
                 let $$res: Nullable<Config> = null;
                 if (true
                     && ($scope$conf = this.regexAccept(String.raw`(?:[A-Za-z_]+)`, $$dpth + 1, $$cr)) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
                     && this.regexAccept(String.raw`(?:=)`, $$dpth + 1, $$cr) !== null
                     && ((this.matchWS($$dpth + 1, $$cr)) || true)
-                    && ($scope$value = this.regexAccept(String.raw`(?:[^\]\)\n\r,]*)`, $$dpth + 1, $$cr)) !== null
+                    && ($scope$value = this.matchConfig_$0($$dpth + 1, $$cr)) !== null
                 ) {
                     $$res = new Config($scope$conf, $scope$value);
                 }
                 return $$res;
             });
+    }
+    public matchConfig_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Config_$0> {
+        return this.choice<Config_$0>([
+            () => this.matchConfig_$0_1($$dpth + 1, $$cr),
+            () => this.matchConfig_$0_2($$dpth + 1, $$cr),
+            () => this.matchConfig_$0_3($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchConfig_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Config_$0_1> {
+        return this.matchNumber($$dpth + 1, $$cr);
+    }
+    public matchConfig_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Config_$0_2> {
+        return this.matchBoolean($$dpth + 1, $$cr);
+    }
+    public matchConfig_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<Config_$0_3> {
+        return this.matchConfString($$dpth + 1, $$cr);
     }
     public matchConfigTail($$dpth: number, $$cr?: ErrorTracker): Nullable<ConfigTail> {
         return this.run<ConfigTail>($$dpth,
@@ -1403,6 +1449,32 @@ export class Parser {
                     && this.regexAccept(String.raw`(?:deg)`, $$dpth + 1, $$cr) !== null
                 ) {
                     $$res = new Degree($scope$num);
+                }
+                return $$res;
+            });
+    }
+    public matchBoolean($$dpth: number, $$cr?: ErrorTracker): Nullable<Boolean> {
+        return this.run<Boolean>($$dpth,
+            () => {
+                let $scope$str: Nullable<string>;
+                let $$res: Nullable<Boolean> = null;
+                if (true
+                    && ($scope$str = this.regexAccept(String.raw`(?:(true)|(false))`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new Boolean($scope$str);
+                }
+                return $$res;
+            });
+    }
+    public matchConfString($$dpth: number, $$cr?: ErrorTracker): Nullable<ConfString> {
+        return this.run<ConfString>($$dpth,
+            () => {
+                let $scope$str: Nullable<string>;
+                let $$res: Nullable<ConfString> = null;
+                if (true
+                    && ($scope$str = this.regexAccept(String.raw`(?:[^\]\)\n\r,]*)`, $$dpth + 1, $$cr)) !== null
+                ) {
+                    $$res = new ConfString($scope$str);
                 }
                 return $$res;
             });

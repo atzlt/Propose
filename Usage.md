@@ -100,7 +100,8 @@ The value can be a string, a number or a number with `deg` suffix.
 4. `dash` Dash line style, set [the `stroke-dasharray` attribute](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray). Default: `undefined`.
 5. `loc, dist` The default location (angle) and distance for labels Default: `0`, `10`.
 6. `labelsize` The default size of the label.
-7. `autolabel` Whether to enable autolabelling, using the name of the point being drawn. Default: `false`, turn on if any value is set to it (including the string `false`).
+7. `font` The font family of the label.
+8. `autolabel` Whether to enable autolabelling, using the name of the point being drawn. Default: `false`, turn on if any value is set to it (including the string `false`).
 
 ## Drawing
 
@@ -128,10 +129,7 @@ The unit length is 1 centimeter. The y-axis of SVG coordinate system is flipped,
 
 ### Units
 
-Normally everything you draw is using `cm` as unit length, **_except for_**:
-
-1. Height, width, `minX`, `minY`.
-2. `dist` (distance of label).
+Normally everything you draw is using `cm` as unit length, **_except for_** `dist` (distance of label), `dotsize`, `labelsize`, `dash`, or other configurations involving only _small distances_.
 
 ## Save file
 
@@ -231,3 +229,10 @@ Name of method for centers have the format: `c` + `short name of center`, or `c`
 - `J`, `Ex`, excenter **in angle `A`**.
 - `H`, `Ortho`, orthocenter
 - `G`, `Centr`, centroid
+- `Ge`, Gergonne point
+- `K`, `Sym`, symmedian
+
+And some other functions related to triangles:
+
+- `cBary` From barycentrics. `cBary <triangle>, <number>, <number>, <number>`
+- `isoConj` Isogonal Conjugate. `isoConj <triangle>, <point>`

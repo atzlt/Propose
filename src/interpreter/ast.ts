@@ -33,14 +33,14 @@ export type AstCircle3P = {
 export type AstPolygon = {
     kind: "poly";
     P: string[];
-}
+};
 
 export type AstArc = {
     kind: "arc";
     a: string;
     b: string;
     c: string;
-}
+};
 
 export type AstArg =
     | string
@@ -58,7 +58,7 @@ export type AstExpr = {
 };
 
 export type AstCoord = {
-    kind: "coord",
+    kind: "coord";
     x: number;
     y: number;
 };
@@ -83,7 +83,14 @@ export type AstDecl = {
 };
 
 export type AstDrawStep = {
-    step: AstPolygon | AstArc | AstLine2P | AstCircleOA | AstCircleOR | AstCircle3P | string;
+    step:
+        | AstPolygon
+        | AstArc
+        | AstLine2P
+        | AstCircleOA
+        | AstCircleOR
+        | AstCircle3P
+        | string;
     conf: AstConfig[];
 };
 
@@ -94,7 +101,7 @@ export type AstDraw = {
 
 export type AstConfig = {
     conf: string;
-    value: string;
+    value: string | number | boolean;
 };
 
 export type AstConfigLine = {
@@ -108,9 +115,9 @@ export type AstSaveFile = {
 };
 
 export type AstEval = {
-    kind: "eval",
+    kind: "eval";
     str: string;
-}
+};
 
 export type AstFileLine = AstDecl | AstDraw | AstConfigLine | AstSaveFile;
 
