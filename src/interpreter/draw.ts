@@ -1,5 +1,4 @@
 import { metric as m } from "../deps.ts";
-import { Arc } from "./parser.ts";
 
 export const CM = 37.795;
 

@@ -20,8 +20,8 @@ import {
     isTrig,
 } from "./ast.ts";
 import {
-    CM,
     calcArc,
+    CM,
     drawArc3P,
     drawCircle,
     drawDot,
@@ -29,12 +29,13 @@ import {
     drawPolygon,
     drawSegment,
 } from "./draw.ts";
+import { draw, label } from "./draw_util.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
 
-type ObjectsRecord = Record<string, m.GObject | number>;
+export type ObjectsRecord = Record<string, m.GObject | number>;
 
-type Config = {
+export type Config = {
     width?: number;
     height?: number;
     minX?: number;
@@ -53,7 +54,7 @@ type Config = {
     label?: string;
 };
 
-export default class Interpreter {
+export class Interpreter {
     objs: ObjectsRecord;
     config: Config;
     svg: {
@@ -175,81 +176,24 @@ export default class Interpreter {
     }
 
     #draw(drawStep: AstDrawStep) {
-        const step = drawStep.step;
         let tempConf: Config = {};
         for (const conf of drawStep.conf) {
             // @ts-ignore: Cannot infer input type from user content
             tempConf[conf.conf] = conf.value;
         }
         tempConf = { ...this.config, ...tempConf };
-        if (
-            tempConf.label == undefined &&
-            tempConf.autolabel &&
-            typeof step == "string"
-        ) {
-            tempConf.label = step;
-        }
 
-        if (typeof step == "string") {
-            const obj = this.objs[step];
-            if (m.isPoint(obj)) {
-                this.svg.dots += drawDot(obj, tempConf);
-                if (tempConf.label != undefined) {
-                    this.svg.text += drawLabel(obj, tempConf);
-                }
-            } else if (m.isCircle(obj)) {
-                this.svg.line += drawCircle(obj, tempConf);
-                if (tempConf.label != undefined) {
-                    this.svg.text += drawLabel(
-                        m.calc.point_on.onCircle(
-                            obj,
-                            tempConf.loc!,
-                        ),
-                        tempConf,
-                    );
-                }
-            }
-        } else if (isLine2P(step)) {
-            const x = <m.Point> this.objs[step.a];
-            const y = <m.Point> this.objs[step.b];
-            this.svg.line += drawSegment(x, y, tempConf);
-        } else if (
-            isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
+        const output = draw(drawStep, tempConf, this.objs);
+        this.svg[output.layer] += output.content;
+        if (
+            tempConf.label !== undefined ||
+            (tempConf.autolabel && typeof drawStep.step == "string")
         ) {
-            const obj = <m.Circle> this.#resolveArg(step);
-            this.svg.line += drawCircle(obj, tempConf);
-            if (tempConf.label != undefined) {
-                this.svg.text += drawLabel(
-                    m.calc.point_on.onCircle(
-                        obj,
-                        tempConf.loc!,
-                    ),
-                    tempConf,
-                );
+            const output = label(drawStep, tempConf, this.objs);
+            if (output) {
+                this.svg[output.layer] += output.content;
             }
-        } else if (isPoly(step)) {
-            this.svg.area += drawPolygon(
-                <m.Point[]> step.P.map((val, _) => this.objs[val]),
-                tempConf,
-            );
-        } else if (isArc(step)) {
-            const A = <m.Point> this.objs[step.a];
-            const B = <m.Point> this.objs[step.b];
-            const C = <m.Point> this.objs[step.c];
-            const arc = calcArc(A, B, C);
-            this.svg.line += drawArc3P(arc, tempConf);
-            if (tempConf.label != undefined) {
-                tempConf.loc = tempConf.loc! * arc.angle;
-                this.svg.text += drawLabel(
-                    m.calc.transform.rotate(
-                        A,
-                        arc.center,
-                        tempConf.loc,
-                    ),
-                    tempConf,
-                );
-            }
-        } else throw Error(`Unrecognized drawing step ${step}`);
+        }
     }
 
     #evalExpr(expr: AstExpr) {

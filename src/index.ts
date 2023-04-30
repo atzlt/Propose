@@ -1,5 +1,5 @@
 import { parseFlags } from "./deps.ts";
-import Interpreter from "./interpreter/interpreter.ts";
+import { Interpreter } from "./interpreter/mod.ts";
 
 const VERSION = "v0.1.0-alpha";
 
