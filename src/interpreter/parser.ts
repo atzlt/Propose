@@ -52,6 +52,9 @@ export enum ASTKinds {
     RightCoord,
     PolarCoord,
     Draw,
+    Draw_$0_1,
+    Draw_$0_2,
+    Draw_$0_3,
     DrawStep,
     DrawStep_$0_1,
     DrawStep_$0_2,
@@ -305,20 +308,28 @@ export class PolarCoord {
 }
 export class Draw {
     public kind: ASTKinds.Draw = ASTKinds.Draw;
+    public type: Draw_$0;
     public head: DrawStep;
     public tail: DrawStepTail[];
     public val: ast.AstDraw;
-    constructor(head: DrawStep, tail: DrawStepTail[]){
+    constructor(type: Draw_$0, head: DrawStep, tail: DrawStepTail[]){
+        this.type = type;
         this.head = head;
         this.tail = tail;
         this.val = ((): ast.AstDraw => {
         return {
         kind: "draw",
+        // @ts-ignore: We know this could only be one of those values.
+        type,
         steps: [head.val].concat(tail.map((arg, _) => arg.val)),
     };
         })();
     }
 }
+export type Draw_$0 = Draw_$0_1 | Draw_$0_2 | Draw_$0_3;
+export type Draw_$0_1 = string;
+export type Draw_$0_2 = string;
+export type Draw_$0_3 = string;
 export class DrawStep {
     public kind: ASTKinds.DrawStep = ASTKinds.DrawStep;
     public step: DrawStep_$0;
@@ -1018,19 +1029,36 @@ export class Parser {
     public matchDraw($$dpth: number, $$cr?: ErrorTracker): Nullable<Draw> {
         return this.run<Draw>($$dpth,
             () => {
+                let $scope$type: Nullable<Draw_$0>;
                 let $scope$head: Nullable<DrawStep>;
                 let $scope$tail: Nullable<DrawStepTail[]>;
                 let $$res: Nullable<Draw> = null;
                 if (true
-                    && this.regexAccept(String.raw`(?:draw)`, $$dpth + 1, $$cr) !== null
+                    && ($scope$type = this.matchDraw_$0($$dpth + 1, $$cr)) !== null
                     && this.matchWS($$dpth + 1, $$cr) !== null
                     && ($scope$head = this.matchDrawStep($$dpth + 1, $$cr)) !== null
                     && ($scope$tail = this.loop<DrawStepTail>(() => this.matchDrawStepTail($$dpth + 1, $$cr), true)) !== null
                 ) {
-                    $$res = new Draw($scope$head, $scope$tail);
+                    $$res = new Draw($scope$type, $scope$head, $scope$tail);
                 }
                 return $$res;
             });
+    }
+    public matchDraw_$0($$dpth: number, $$cr?: ErrorTracker): Nullable<Draw_$0> {
+        return this.choice<Draw_$0>([
+            () => this.matchDraw_$0_1($$dpth + 1, $$cr),
+            () => this.matchDraw_$0_2($$dpth + 1, $$cr),
+            () => this.matchDraw_$0_3($$dpth + 1, $$cr),
+        ]);
+    }
+    public matchDraw_$0_1($$dpth: number, $$cr?: ErrorTracker): Nullable<Draw_$0_1> {
+        return this.regexAccept(String.raw`(?:draw)`, $$dpth + 1, $$cr);
+    }
+    public matchDraw_$0_2($$dpth: number, $$cr?: ErrorTracker): Nullable<Draw_$0_2> {
+        return this.regexAccept(String.raw`(?:label)`, $$dpth + 1, $$cr);
+    }
+    public matchDraw_$0_3($$dpth: number, $$cr?: ErrorTracker): Nullable<Draw_$0_3> {
+        return this.regexAccept(String.raw`(?:decor)`, $$dpth + 1, $$cr);
     }
     public matchDrawStep($$dpth: number, $$cr?: ErrorTracker): Nullable<DrawStep> {
         return this.run<DrawStep>($$dpth,

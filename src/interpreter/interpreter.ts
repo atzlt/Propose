@@ -4,7 +4,6 @@ import {
     AstArg,
     AstDrawStep,
     AstExpr,
-    isArc,
     isCircle3P,
     isCircleOA,
     isCircleOR,
@@ -15,20 +14,10 @@ import {
     isDraw,
     isEval,
     isLine2P,
-    isPoly,
     isSaveFile,
     isTrig,
 } from "./ast.ts";
-import {
-    calcArc,
-    CM,
-    drawArc3P,
-    drawCircle,
-    drawDot,
-    drawLabel,
-    drawPolygon,
-    drawSegment,
-} from "./draw.ts";
+import { CM } from "./draw.ts";
 import { draw, label } from "./draw_util.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
@@ -129,7 +118,7 @@ export class Interpreter {
             } else if (isDraw(line)) {
                 // console.log(line.steps);
                 for (const drawStep of line.steps) {
-                    this.#draw(drawStep);
+                    this.#draw(drawStep, line.type);
                 }
             } else if (isConf(line)) {
                 for (const conf of line.confs) {
@@ -175,7 +164,7 @@ export class Interpreter {
         }
     }
 
-    #draw(drawStep: AstDrawStep) {
+    #draw(drawStep: AstDrawStep, type: "draw" | "label" | "decor") {
         let tempConf: Config = {};
         for (const conf of drawStep.conf) {
             // @ts-ignore: Cannot infer input type from user content
@@ -183,8 +172,10 @@ export class Interpreter {
         }
         tempConf = { ...this.config, ...tempConf };
 
-        const output = draw(drawStep, tempConf, this.objs);
-        this.svg[output.layer] += output.content;
+        if (type == "draw") {
+            const output = draw(drawStep, tempConf, this.objs);
+            this.svg[output.layer] += output.content;
+        }
         if (
             tempConf.label !== undefined ||
             (tempConf.autolabel && typeof drawStep.step == "string")
@@ -193,6 +184,9 @@ export class Interpreter {
             if (output) {
                 this.svg[output.layer] += output.content;
             }
+        }
+        if (type == "decor") {
+            console.log("Decoration not supported.")
         }
     }
 

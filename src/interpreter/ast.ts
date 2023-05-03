@@ -96,6 +96,7 @@ export type AstDrawStep = {
 
 export type AstDraw = {
     kind: "draw";
+    type: "draw" | "label" | "decor";
     steps: AstDrawStep[];
 };
 

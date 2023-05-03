@@ -40,9 +40,11 @@ PolarCoord := '\(' WS? r=RNumber WS? ':' WS? a=Number WS? '\)'
         y: r.val * Math.sin(a.val)
     }; }
 
-Draw := 'draw' WS head=DrawStep tail=DrawStepTail*
+Draw := type={'draw' | 'label' | 'decor'} WS head=DrawStep tail=DrawStepTail*
     .val = ast.AstDraw { return {
         kind: "draw",
+        // @ts-ignore: We know this could only be one of those values.
+        type,
         steps: [head.val].concat(tail.map((arg, _) => arg.val)),
     }; }
 DrawStep := step={Polygon | Arc | Line2P | Circle3P | CircleOR | CircleOA | PointID | CommonID} WS? conf=DrawConfig?

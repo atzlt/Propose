@@ -84,70 +84,94 @@ export function draw(
     throw Error(`Unrecognized drawing step ${step}`);
 }
 
-export function label(
+function decorWith(
+    fn: (pos: m.Point, conf: Config) => string,
+): (
     drawStep: AstDrawStep,
     conf: Config,
     objs: ObjectsRecord,
-): DrawOutput | undefined {
-    const step = drawStep.step;
-
-    // Do autolabelling
-    if (
-        conf.label === undefined &&
-        conf.autolabel &&
-        typeof step == "string"
+) => DrawOutput | undefined {
+    return function (
+        drawStep,
+        conf,
+        objs,
     ) {
-        conf.label = step;
-    }
+        const step = drawStep.step;
 
-    if (typeof step == "string") {
-        const obj = objs[step];
-        if (m.isPoint(obj)) {
-            return { layer: "text", content: drawLabel(obj, conf) };
-        } else if (m.isCircle(obj)) {
+        // Do autolabelling
+        if (
+            conf.label === undefined &&
+            conf.autolabel &&
+            typeof step == "string"
+        ) {
+            conf.label = step;
+        }
+
+        if (typeof step == "string") {
+            const obj = objs[step];
+            if (m.isPoint(obj)) {
+                return { layer: "text", content: fn(obj, conf) };
+            } else if (m.isCircle(obj)) {
+                return {
+                    layer: "text",
+                    content: fn(
+                        m.calc.point_on.onCircle(
+                            obj,
+                            conf.loc!,
+                        ),
+                        conf,
+                    ),
+                };
+            }
+        } else if (isLine2P(step)) {
             return {
                 layer: "text",
-                content: drawLabel(
-                    m.calc.point_on.onCircle(
-                        obj,
+                content: fn(
+                    m.calc.point_on.onSegment(
+                        [
+                            <m.Point> objs[step.a],
+                            <m.Point> objs[step.b],
+                        ],
                         conf.loc!,
                     ),
                     conf,
                 ),
             };
-        }
-    } else if (
-        isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
-    ) {
-        const circ = <m.Circle> resolveCircle(step, objs);
-        return {
-            layer: "text",
-            content: drawLabel(
-                m.calc.point_on.onCircle(
-                    circ,
-                    conf.loc!,
-                ),
-                conf,
-            ),
-        };
-    } else if (isArc(step)) {
-        const A = <m.Point> objs[step.a];
-        const B = <m.Point> objs[step.b];
-        const C = <m.Point> objs[step.c];
-        const arc = calcArc(A, B, C);
-        if (conf.label != undefined) {
-            conf.loc = conf.loc! * arc.angle;
+        } else if (
+            isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
+        ) {
+            const circ = <m.Circle> resolveCircle(step, objs);
             return {
                 layer: "text",
-                content: drawLabel(
-                    m.calc.transform.rotate(
-                        A,
-                        arc.center,
-                        conf.loc,
+                content: fn(
+                    m.calc.point_on.onCircle(
+                        circ,
+                        conf.loc!,
                     ),
                     conf,
                 ),
             };
+        } else if (isArc(step)) {
+            const A = <m.Point> objs[step.a];
+            const B = <m.Point> objs[step.b];
+            const C = <m.Point> objs[step.c];
+            const arc = calcArc(A, B, C);
+            if (conf.label != undefined) {
+                conf.loc = conf.loc! * arc.angle;
+                return {
+                    layer: "text",
+                    content: fn(
+                        m.calc.transform.rotate(
+                            A,
+                            arc.center,
+                            conf.loc,
+                        ),
+                        conf,
+                    ),
+                };
+            }
         }
-    }
+    };
 }
+
+export const label = decorWith(drawLabel);
