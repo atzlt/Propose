@@ -15,5 +15,6 @@ Q, _ = i k, d, B
 draw c, d, A, B, S, T, ST, P, Q, PQ
 save test_input\reim-intermediate.svg
 
-config color=red
+config color=red, decorcolor=blue
 draw SP, TQ
+decor SP[decor= >], TQ[decor= >]

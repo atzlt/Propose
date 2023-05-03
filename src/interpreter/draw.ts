@@ -12,7 +12,9 @@ export function drawSegment(
     },
 ) {
     const dash = conf.dash ? ` stroke-dasharray="${conf.dash}"` : "";
-    return `<line x1="${A[0]}cm" y1="${-A[1]}cm" x2="${B[0]}cm" y2="${-B[
+    return `<line x1="${A[0]}cm" y1="${-A[1]}cm" x2="${
+        B[0]
+    }cm" y2="${-B[
         1
     ]}cm" stroke="${conf.color}" stroke-width="${conf.linewidth}"${dash}/>`;
 }

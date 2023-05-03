@@ -19,6 +19,7 @@ import {
 } from "./draw.ts";
 import { Config, ObjectsRecord } from "./interpreter.ts";
 import { metric as m } from "../deps.ts";
+import { drawDecor } from "./decor.ts";
 
 export type DrawOutput = {
     layer: "dots" | "line" | "area" | "text";
@@ -86,11 +87,12 @@ export function draw(
 
 function decorWith(
     fn: (pos: m.Point, conf: Config) => string,
+    withAngle = false,
 ): (
     drawStep: AstDrawStep,
     conf: Config,
     objs: ObjectsRecord,
-) => DrawOutput | undefined {
+) => string | undefined {
     return function (
         drawStep,
         conf,
@@ -110,68 +112,58 @@ function decorWith(
         if (typeof step == "string") {
             const obj = objs[step];
             if (m.isPoint(obj)) {
-                return { layer: "text", content: fn(obj, conf) };
+                return fn(obj, conf);
             } else if (m.isCircle(obj)) {
-                return {
-                    layer: "text",
-                    content: fn(
-                        m.calc.point_on.onCircle(
-                            obj,
-                            conf.loc!,
-                        ),
-                        conf,
-                    ),
-                };
-            }
-        } else if (isLine2P(step)) {
-            return {
-                layer: "text",
-                content: fn(
-                    m.calc.point_on.onSegment(
-                        [
-                            <m.Point> objs[step.a],
-                            <m.Point> objs[step.b],
-                        ],
+                return fn(
+                    m.calc.point_on.onCircle(
+                        obj,
                         conf.loc!,
                     ),
                     conf,
-                ),
-            };
+                );
+            }
+        } else if (isLine2P(step)) {
+            const A = <m.Point> objs[step.a];
+            const B = <m.Point> objs[step.b];
+            if (withAngle) {
+                conf.decorangle = Math.atan2(B[1] - A[1], B[0] - A[0]);
+            }
+            return fn(
+                m.calc.point_on.onSegment([A, B], conf.loc!),
+                conf,
+            );
         } else if (
             isCircleOR(step) || isCircleOA(step) || isCircle3P(step)
         ) {
             const circ = <m.Circle> resolveCircle(step, objs);
-            return {
-                layer: "text",
-                content: fn(
-                    m.calc.point_on.onCircle(
-                        circ,
-                        conf.loc!,
-                    ),
-                    conf,
-                ),
-            };
+            const pos = m.calc.point_on.onCircle(
+                circ,
+                conf.loc!,
+            );
+            if (withAngle) {
+                const O = circ[0];
+                conf.decorangle = Math.atan2(pos[0] - O[0], O[1] - pos[1]);
+            }
+            return fn(pos, conf);
         } else if (isArc(step)) {
             const A = <m.Point> objs[step.a];
             const B = <m.Point> objs[step.b];
             const C = <m.Point> objs[step.c];
             const arc = calcArc(A, B, C);
-            if (conf.label != undefined) {
-                conf.loc = conf.loc! * arc.angle;
-                return {
-                    layer: "text",
-                    content: fn(
-                        m.calc.transform.rotate(
-                            A,
-                            arc.center,
-                            conf.loc,
-                        ),
-                        conf,
-                    ),
-                };
+            conf.loc = conf.loc! * arc.angle;
+            const pos = m.calc.transform.rotate(
+                A,
+                arc.center,
+                conf.loc,
+            );
+            if (withAngle) {
+                const O = arc.center;
+                conf.decorangle = Math.atan2(pos[0] - O[0], O[1] - pos[1]);
             }
+            return fn(pos, conf);
         }
     };
 }
 
 export const label = decorWith(drawLabel);
+export const decor = decorWith(drawDecor, true);

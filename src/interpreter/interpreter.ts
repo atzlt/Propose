@@ -18,7 +18,7 @@ import {
     isTrig,
 } from "./ast.ts";
 import { CM } from "./draw.ts";
-import { draw, label } from "./draw_util.ts";
+import { decor, draw, label } from "./draw_util.ts";
 import { METHODS } from "./methods.ts";
 import { parse } from "./parser.ts";
 
@@ -41,6 +41,12 @@ export type Config = {
     font?: string;
     dash?: string;
     label?: string;
+    decor?: string;
+    decorsize?: number;
+    decorangle?: number;
+    decorwidth?: number;
+    decorcolor?: string;
+    decorfill?: string;
 };
 
 export class Interpreter {
@@ -49,6 +55,7 @@ export class Interpreter {
     svg: {
         dots: string;
         line: string;
+        decor: string;
         text: string;
         area: string;
     };
@@ -64,16 +71,21 @@ export class Interpreter {
             fill: "#00000000",
             linewidth: 1.5,
             dotsize: 2.5,
-            loc: 0,
+            loc: 0.5,
             dist: 10,
             angle: 0,
             labelsize: 15,
             autolabel: false,
             font: "serif",
+            decorsize: 8,
+            decorwidth: 1.5,
+            decorcolor: "#000000",
+            decorfill: "#00000000",
         }, options);
         this.svg = {
             dots: "",
             line: "",
+            decor: "",
             text: "",
             area: "",
         };
@@ -142,7 +154,7 @@ export class Interpreter {
         const minX = this.config.minX ? this.config.minX * CM : -width / 2;
         const minY = this.config.minY ? this.config.minY * CM : -height / 2;
         // console.log([width, height, minX, minY]);
-        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${minX} ${minY} ${width} ${height}">${this.svg.area}${this.svg.line}${this.svg.dots}${this.svg.text}</svg>`;
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${minX} ${minY} ${width} ${height}">\n${this.svg.area}\n${this.svg.line}\n${this.svg.decor}\n${this.svg.dots}\n${this.svg.text}</svg>`;
     }
 
     #initExprParser() {
@@ -182,11 +194,14 @@ export class Interpreter {
         ) {
             const output = label(drawStep, tempConf, this.objs);
             if (output) {
-                this.svg[output.layer] += output.content;
+                this.svg.text += output;
             }
         }
         if (type == "decor") {
-            console.log("Decoration not supported.")
+            const output = decor(drawStep, tempConf, this.objs);
+            if (output) {
+                this.svg.decor += output;
+            }
         }
     }
 
